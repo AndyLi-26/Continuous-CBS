@@ -13,6 +13,7 @@
 #define CN_EPSILON       1e-8
 #define CN_INFINITY		 1e+8
 #define CN_LOG           "_log"
+#define CN_AGENT_NUM	 50
 
 //XML file tags
 #define CNS_TAG_ROOT                "root"

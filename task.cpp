@@ -1,7 +1,8 @@
 #include "task.h"
-Task::Task()
+Task::Task(int _agent_num)
 {
     agents.clear();
+	agent_num=_agent_num;
 }
 
 bool Task::get_task(const char *FileName, int k)
@@ -35,7 +36,7 @@ bool Task::get_task(const char *FileName, int k)
         a.goal_id = agent->IntAttribute(CNS_TAG_GOAL_ID);
         a.id = int(agents.size());
         agents.push_back(a);
-        if(int(agents.size()) == k)
+        if(int(agents.size()) == agent_num)
             break;
     }
     return true;

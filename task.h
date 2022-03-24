@@ -21,6 +21,7 @@ public:
     unsigned int get_agents_size() const { return agents.size(); }
     void make_ids(int width);
     void make_ij(const Map &map);
+	int agent_num;
     Agent get_agent(int id) const;
     void print_task()
     {
@@ -29,7 +30,8 @@ public:
         for(auto agent:agents)
             std::cout<<"<agent start_i=\""<<agent.start_i<<"\" start_j=\""<<agent.start_j<<"\" goal_i=\""<<agent.goal_i<<"\" goal_j=\""<<agent.goal_j<<"\"/>\n";
     }
-    Task();
+    Task(int _agent_num);
+	int get_agent_num() {return agents.size();}
 };
 
 #endif // TASK_H

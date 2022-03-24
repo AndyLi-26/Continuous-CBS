@@ -20,6 +20,7 @@ public:
     int     connectdness;
     double  agent_size;
     double  timelimit;
+	int 	agent_num;
 };
 
 #endif // CONFIG_H

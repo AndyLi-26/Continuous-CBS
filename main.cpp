@@ -4,7 +4,7 @@
 #include "task.h"
 #include "cbs.h"
 #include "xml_logger.h"
-
+using namespace std;
 int main(int argc, const char *argv[])
 {
     if(argc > 2)
@@ -14,12 +14,14 @@ int main(int argc, const char *argv[])
             config.getConfig(argv[3]);
         Map map = Map(config.agent_size, config.connectdness);
         map.get_map(argv[1]);
-        Task task;
+        Task task(config.agent_num);
         task.get_task(argv[2]);
         if(map.is_roadmap())
             task.make_ij(map);
         else
             task.make_ids(map.get_width());
+		cout<<"agents_num="<<task.get_agent_num()<<endl;
+		task.print_task();
         CBS cbs;
         Solution solution = cbs.find_solution(map, task, config);
         XML_logger logger;

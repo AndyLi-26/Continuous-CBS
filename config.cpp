@@ -8,6 +8,7 @@ Config::Config()
     timelimit = CN_TIMELIMIT;
     focal_weight = CN_FOCAL_WEIGHT;
     precision = CN_PRECISION;
+	agent_num = CN_AGENT_NUM;
 }
 
 
@@ -196,6 +197,21 @@ void Config::getConfig(const char *fileName)
         stream>>timelimit;
         if(timelimit <= 0)
             timelimit = CN_INFINITY;
+        stream.clear();
+        stream.str("");
+    }
+	
+	element = algorithm->FirstChildElement("agent_number");
+    if (!element)
+    {
+        std::cout << "Error! No 'agent_number' element found inside '"<<CNS_TAG_ALGORITHM<<"' section. It's compared to '"<<CN_TIMELIMIT<<"'."<<std::endl;
+        agent_num = CN_AGENT_NUM;
+    }
+    else
+    {
+        auto value = element->GetText();
+        stream<<value;
+        stream>>agent_num;
         stream.clear();
         stream.str("");
     }
