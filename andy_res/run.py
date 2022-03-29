@@ -11,7 +11,7 @@ for m in ["sparse","dense","super-dense"]:
             cmd=[exe,map_address.format(m),
             task_address.format(m,i),
             config.format(m,a)]
-            if (len(processPool)>=10):
+            if (len(processPool)>=20):
                 finish = False
                 while not finish:
                     time.sleep(1)
