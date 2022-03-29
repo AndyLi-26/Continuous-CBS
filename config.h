@@ -6,7 +6,7 @@
 #include <iostream>
 #include <sstream>
 #include <math.h>
-
+using namespace std;
 class Config
 {
 public:
@@ -21,6 +21,7 @@ public:
     double  agent_size;
     double  timelimit;
 	int 	agent_num;
+	string output;
 };
 
 #endif // CONFIG_H

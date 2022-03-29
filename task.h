@@ -25,9 +25,7 @@ public:
     Agent get_agent(int id) const;
     void print_task()
     {
-        //for(int i=0; i<agents.size(); i++)
-        //    std::cout<<i<<","<<agents[i].start_i<<","<<agents[i].start_j<<","<<agents[i].goal_i<<","<<agents[i].goal_j<<"\n";
-        for(auto agent:agents)
+       for(auto agent:agents)
             std::cout<<"<agent start_i=\""<<agent.start_i<<"\" start_j=\""<<agent.start_j<<"\" goal_i=\""<<agent.goal_i<<"\" goal_j=\""<<agent.goal_j<<"\"/>\n";
     }
     Task(int _agent_num);

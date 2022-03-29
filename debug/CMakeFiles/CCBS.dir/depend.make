@@ -188,6 +188,7 @@ CMakeFiles/CCBS.dir/task.cpp.o: ../tinyxml2.h
 CMakeFiles/CCBS.dir/tinyxml2.cpp.o: ../tinyxml2.cpp
 CMakeFiles/CCBS.dir/tinyxml2.cpp.o: ../tinyxml2.h
 
+CMakeFiles/CCBS.dir/xml_logger.cpp.o: ../config.h
 CMakeFiles/CCBS.dir/xml_logger.cpp.o: ../const.h
 CMakeFiles/CCBS.dir/xml_logger.cpp.o: ../map.h
 CMakeFiles/CCBS.dir/xml_logger.cpp.o: ../structs.h

@@ -24,6 +24,7 @@ private:
     bool check_line(int x1, int y1, int x2, int y2);
     bool get_grid(const char* FileName);
     bool get_roadmap(const char* FileName);
+	int nodes_num; //public node limit
 public:
     Map(double size, int k){ agent_size = size; connectedness = k; }
     ~Map(){}
@@ -36,6 +37,7 @@ public:
     int  get_id(int i, int j) const;
     double get_i (int id) const;
     double get_j (int id) const;
+	bool add_node(int i, int j, int node1, int node2,int agent);
     std::vector<Node> get_valid_moves(int id) const;
     void print_map();
     void printPPM();

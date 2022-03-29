@@ -1,5 +1,5 @@
 #include "xml_logger.h"
-
+using namespace std;
 XML_logger::XML_logger()
 {
 
@@ -11,7 +11,7 @@ void XML_logger::save_log()
 
 bool XML_logger::get_log(const char *FileName)
 {
-    std::string value;
+    string value;
     tinyxml2::XMLDocument doc_xml;
 
     if(doc_xml.LoadFile(FileName) != tinyxml2::XMLError::XML_SUCCESS)
@@ -108,3 +108,21 @@ void XML_logger::write_to_log_path(const Solution &solution, const Map &map)
         }
     }
 }
+
+void XML_logger::txt_writer(const Solution &solution, const Config &config)
+{
+	ofstream stats;
+	if (config.output != "")
+	{
+		stats.open(config.output, ios::app);
+		stats <<config.agent_num<<"," 
+		<<solution.time.count()<<"," 
+		<<solution.flowtime<<","
+		<<solution.makespan<<","
+		<<endl;
+		stats.close();
+		cout<<"git here"<<endl;
+	}
+}
+
+

@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<root>
+    <root>
 	<algorithm>
 		<use_cardinal>true</use_cardinal>
 		<use_disjoint_splitting>true</use_disjoint_splitting>
@@ -9,6 +9,8 @@
 		<agent_size>0.353553</agent_size>
 		<timelimit>300</timelimit>
 		<precision>0.0000001</precision>
-		<agent_number>25</agent_number>
+		<agent_number>18</agent_number>
+		<output_file>optsparse.txt</output_file>
 	</algorithm>
-</root>
+    </root>
+    

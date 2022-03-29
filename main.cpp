@@ -21,7 +21,7 @@ int main(int argc, const char *argv[])
         else
             task.make_ids(map.get_width());
 		cout<<"agents_num="<<task.get_agent_num()<<endl;
-		task.print_task();
+		//task.print_task();
         CBS cbs;
         Solution solution = cbs.find_solution(map, task, config);
         XML_logger logger;
@@ -31,7 +31,8 @@ int main(int argc, const char *argv[])
 
         logger.get_log(argv[2]);
         logger.write_to_log_summary(solution);
-        logger.write_to_log_path(solution, map);
+		logger.txt_writer(solution,config);
+        //logger.write_to_log_path(solution, map);
         logger.save_log();
     }
     else

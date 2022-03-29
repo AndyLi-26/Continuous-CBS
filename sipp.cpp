@@ -22,6 +22,8 @@ void SIPP::find_successors(Node curNode, const Map &map, std::list<Node> &succs,
     std::vector<Node> valid_moves = map.get_valid_moves(curNode.id);
     for(auto move : valid_moves)
     {
+		if (move.agent!=-1 && move.agent!=agent.id)
+			continue;
         newNode.i = move.i;
         newNode.j = move.j;
         newNode.id = move.id;

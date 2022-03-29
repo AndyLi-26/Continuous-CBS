@@ -31,8 +31,9 @@ struct gNode
 {
     double i;
     double j;
+	int agent; //visible to some agent, -1 is everyone
     std::vector<int> neighbors;
-    gNode(double i_ = -1, double j_ = -1):i(i_), j(j_) {}
+    gNode(double i_ = -1, double j_ = -1, int a_=-1):i(i_), j(j_),agent(a_) {}
     ~gNode() { neighbors.clear(); }
 };
 
@@ -40,6 +41,7 @@ struct Node
 {
     int     id;
     double  f, g, i, j;
+	int agent=-1;  //visible to some agent, -1 is everyone
     Node*   parent;
     std::pair<double, double> interval;
     int interval_id;

@@ -255,6 +255,7 @@ bool Map::get_roadmap(const char *FileName)
         node.j = j;
         nodes.push_back(node);
     }
+	nodes_num=nodes.size();
     for(element = root->FirstChildElement("edge"); element; element = element->NextSiblingElement("edge"))
     {
         std::string source = std::string(element->Attribute("source"));
@@ -288,6 +289,41 @@ bool Map::get_roadmap(const char *FileName)
     }
     size = int(nodes.size());
     return true;
+}
+
+bool Map::add_node(int i, int j, int node1, int node2,int agent)
+{
+	//add nodes
+	//TODO: check if this node overlap with other nodes
+	gNode tempnode(i,j,agent);
+    nodes.push_back(tempnode);
+	int nodeid=nodes.size();
+	nodes[nodeid].neighbors.push_back(node1);
+	nodes[nodeid].neighbors.push_back(node2);
+	nodes[node1].neighbors.push_back(nodeid);
+	nodes[node2].neighbors.push_back(nodeid);
+	
+	//add edges
+	Node node;
+	node.i=i;
+	node.j=j;
+	node.agent=agent;
+	node.id=nodeid;
+	//TODO: update g,h
+	valid_moves[node1].push_back(node);
+	valid_moves[node2].push_back(node);
+	std::vector<Node> neighbors;
+	Node valid1;
+	valid1.i = nodes[node1].i;
+    valid1.j = nodes[node1].j;
+    valid1.id = node1;
+    neighbors.push_back(valid1);
+	Node valid2;
+	valid2.i = nodes[node2].i;
+    valid2.j = nodes[node2].j;
+    valid2.id = node2;
+    neighbors.push_back(valid2);
+	return 1;
 }
 
 void Map::print_map()
