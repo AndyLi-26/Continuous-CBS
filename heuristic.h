@@ -29,6 +29,7 @@ public:
     void count(const Map &map, Agent agent);
     unsigned int get_size() const {return h_values[0].size();}
     double get_value(int id_node, int id_agent) { return h_values[id_node][id_agent]; }
+	void add_node(int node_id, unsigned int agent,int next_node);
 };
 
 #endif // HEURISTIC_H

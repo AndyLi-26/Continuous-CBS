@@ -1,6 +1,6 @@
 #include "cbs.h"
 
-bool CBS::init_root(const Map &map, const Task &task)
+bool CBS::init_root(Map &map, const Task &task)
 {
     CBS_Node root;
     tree.set_focal_weight(config.focal_weight);
@@ -239,7 +239,7 @@ Conflict CBS::get_conflict(std::list<Conflict> &conflicts)
     return conflict;
 }
 
-Solution CBS::find_solution(const Map &map, const Task &task, const Config &cfg)
+Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
 {
     config = cfg;
     this->map = &map;
@@ -296,6 +296,7 @@ Solution CBS::find_solution(const Map &map, const Task &task, const Config &cfg)
         }
         else
             conflict = get_conflict(conflicts);
+		split_edge(conflict);
         time_spent = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::high_resolution_clock::now() - time_now);
         time += time_spent.count();
         expanded++;
@@ -470,7 +471,7 @@ bool CBS::validate_constraints(std::list<Constraint> constraints, int agent)
     return true;
 }
 
-void CBS::find_new_conflicts(const Map &map, const Task &task, CBS_Node &node, std::vector<sPath> &paths, const sPath &path,
+void CBS::find_new_conflicts(Map &map, const Task &task, CBS_Node &node, std::vector<sPath> &paths, const sPath &path,
                              const std::list<Conflict> &conflicts, const std::list<Conflict> &semicard_conflicts, const std::list<Conflict> &cardinal_conflicts,
                              int &low_level_searches, int &low_level_expanded)
 {
@@ -696,4 +697,69 @@ std::vector<sPath> CBS::get_paths(CBS_Node *node, unsigned int agents_size)
         if(paths.at(i).cost < 0)
             paths.at(i) = curNode->paths.at(i);
     return paths;
+}
+
+
+void CBS::split_edge(Conflict conflict){
+	int node11=conflict.move1.id1;
+	int node12=conflict.move1.id2;
+	int node21=conflict.move2.id1;
+	int node22=conflict.move2.id2;
+	if ((node11==node22) && (node12==node21)) //cross each other
+		return;
+	if (node12 == node22){ //node conflict
+		double new_i=(map->get_i(node11)+map->get_i(node12))/2;
+		double new_j=(map->get_j(node11)+map->get_j(node12))/2;
+		int new_id=map->add_node(new_i, new_j, node11, node12,conflict.agent1);
+		h_values.add_node(new_id,conflict.agent1,node12);
+		cout<<"node:"<<new_id<<"@("<<new_i<<","<<new_j<<") a:"<<conflict.agent1;
+		
+		new_i=(map->get_i(node21)+map->get_i(node22))/2;
+		new_j=(map->get_j(node21)+map->get_j(node22))/2;
+		new_id=map->add_node(new_i, new_j, node21, node22,conflict.agent2);
+		h_values.add_node(new_id,conflict.agent2,node22);
+		cout<<" &&&:"<<new_id<<"@("<<new_i<<","<<new_j<<") a:"<<conflict.agent2<<endl;
+	}
+	else if(node12 != node22 and node11 != node21){
+		double startTimeA(conflict.move1.t1), endTimeA(conflict.move1.t2), startTimeB(conflict.move2.t1), endTimeB(conflict.move2.t2);
+		int m1i1(map->get_i(conflict.move1.id1)), m1i2(map->get_i(conflict.move1.id2)), m1j1(map->get_j(conflict.move1.id1)), m1j2(map->get_j(conflict.move1.id2));
+		int m2i1(map->get_i(conflict.move2.id1)), m2i2(map->get_i(conflict.move2.id2)), m2j1(map->get_j(conflict.move2.id1)), m2j2(map->get_j(conflict.move2.id2));
+		Vector2D A(m1i1, m1j1);
+		Vector2D B(m2i1, m2j1);
+		Vector2D VA((m1i2 - m1i1)/(conflict.move1.t2 - conflict.move1.t1), (m1j2 - m1j1)/(conflict.move1.t2 - conflict.move1.t1));
+		Vector2D VB((m2i2 - m2i1)/(conflict.move2.t2 - conflict.move2.t1), (m2j2 - m2j1)/(conflict.move2.t2 - conflict.move2.t1));
+		if(startTimeB > startTimeA)
+		{
+			A += VA*(startTimeB-startTimeA);
+			startTimeA = startTimeB;
+		}
+		else if(startTimeB < startTimeA)
+		{
+			B += VB*(startTimeA - startTimeB);
+			startTimeB = startTimeA;
+		}
+		double r(2*CN_AGENT_SIZE);
+		Vector2D w(B - A);
+		double c(w*w - r*r);  //doubting, maybe bug here
+		Vector2D v(VA - VB);
+		double a(v*v);
+		double b(w*v);
+		double dscr(b*b - a*c); //dont understand
+		double ctime = (b - sqrt(dscr))/a;
+		double norm_coef1=sqrt(VA*VA);
+		double norm_coef2=sqrt(VB*VB);
+		Vector2D delta(CN_EPSILON,CN_EPSILON);
+		Vector2D new_node1=A+VA*(ctime-CN_AGENT_SIZE/norm_coef1)-delta;
+		Vector2D new_node2=B+VB*(ctime-CN_AGENT_SIZE/norm_coef2)-delta;
+		
+		int new_id=map->add_node(new_node1.i, new_node1.j, node11, node12,conflict.agent1);
+		h_values.add_node(new_id,conflict.agent1,node12);
+		cout<<"edge:"<<new_id<<"@("<<new_node1.i<<","<<new_node1.j<<") a:"<<conflict.agent1;
+		
+		new_id=map->add_node(new_node2.i, new_node2.j, node21, node22,conflict.agent2);
+		h_values.add_node(new_id,conflict.agent2,node22);
+		cout<<" &&&:"<<new_id<<"@("<<new_node2.i<<","<<new_node2.j<<") a:"<<conflict.agent2<<endl;
+	}
+	else
+		assert(false);
 }

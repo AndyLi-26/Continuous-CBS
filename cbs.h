@@ -14,8 +14,8 @@ class CBS
 {
 public:
     CBS() {}
-    Solution find_solution(const Map &map, const Task &task, const Config &cfg);
-    bool init_root(const Map &map, const Task &task);
+    Solution find_solution(Map &map, const Task &task, const Config &cfg);
+    bool init_root(Map &map, const Task &task);
     std::list<Constraint> get_constraints(CBS_Node *node, int agent_id = -1);
     //std::list<Constraint> merge_constraints(std::list<Constraint> constraints);
     bool validate_constraints(std::list<Constraint> constraints, int agent);
@@ -26,18 +26,19 @@ public:
     std::vector<Conflict> get_all_conflicts(const std::vector<sPath> &paths, int id);
     Constraint get_constraint(int agent, Move move1, Move move2);
     Constraint get_wait_constraint(int agent, Move move1, Move move2);
-    void find_new_conflicts(const Map &map, const Task &task, CBS_Node &node, std::vector<sPath> &paths, const sPath &path,
+    void find_new_conflicts(Map &map, const Task &task, CBS_Node &node, std::vector<sPath> &paths, const sPath &path,
                             const std::list<Conflict> &conflicts, const std::list<Conflict> &semicard_conflicts, const std::list<Conflict> &cardinal_conflicts,
                             int &low_level_searches, int &low_level_expanded);
     double get_cost(CBS_Node node, int agent_id);
     std::vector<sPath> get_paths(CBS_Node *node, unsigned int agents_size);
     Conflict get_conflict(std::list<Conflict> &conflicts);
+	void split_edge(Conflict conflict);
     CBS_Tree tree;
     SIPP planner;
     Solution solution;
     Heuristic h_values;
     Config config;
-    const Map* map;
+    Map* map;
 
 };
 

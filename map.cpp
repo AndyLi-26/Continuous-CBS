@@ -291,17 +291,28 @@ bool Map::get_roadmap(const char *FileName)
     return true;
 }
 
-bool Map::add_node(int i, int j, int node1, int node2,int agent)
+int Map::add_node(int i, int j, int node1, int node2,int agent)
 {
 	//add nodes
-	//TODO: check if this node overlap with other nodes
+	int nodeid=nodes.size();
 	gNode tempnode(i,j,agent);
     nodes.push_back(tempnode);
-	int nodeid=nodes.size();
 	nodes[nodeid].neighbors.push_back(node1);
 	nodes[nodeid].neighbors.push_back(node2);
 	nodes[node1].neighbors.push_back(nodeid);
 	nodes[node2].neighbors.push_back(nodeid);
+	
+	/*
+	std::vector<Node> new_moves;
+	Node copy_node1;
+	copy_node.i=nodes[node1].i;
+	copy_node.j=nodes[node1].j;
+	new_moves.push_back(copy_node1);
+	Node copy_node2;
+	copy_node.i=nodes[node2].i;
+	copy_node.j=nodes[node2].j;
+	new_moves.push_back(copy_node2);
+	valid_moves.push_back(new_moves);*/
 	
 	//add edges
 	Node node;
@@ -309,7 +320,7 @@ bool Map::add_node(int i, int j, int node1, int node2,int agent)
 	node.j=j;
 	node.agent=agent;
 	node.id=nodeid;
-	//TODO: update g,h
+	
 	valid_moves[node1].push_back(node);
 	valid_moves[node2].push_back(node);
 	std::vector<Node> neighbors;
@@ -323,7 +334,8 @@ bool Map::add_node(int i, int j, int node1, int node2,int agent)
     valid2.j = nodes[node2].j;
     valid2.id = node2;
     neighbors.push_back(valid2);
-	return 1;
+	valid_moves.push_back(neighbors);
+	return nodeid;
 }
 
 void Map::print_map()
