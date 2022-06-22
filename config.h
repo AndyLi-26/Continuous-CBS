@@ -16,11 +16,13 @@ public:
     double  focal_weight;
     bool    use_cardinal;
     bool    use_disjoint_splitting;
+    bool    use_edge_split;
     int     hlh_type;
     int     connectdness;
     double  agent_size;
     double  timelimit;
 	int 	agent_num;
+	//double 	resolution;
 	string output;
 };
 

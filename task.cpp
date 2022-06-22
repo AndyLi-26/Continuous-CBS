@@ -13,7 +13,7 @@ bool Task::get_task(const char *FileName, int k)
     // Load XML File
     if (doc.LoadFile(FileName) != tinyxml2::XMLError::XML_SUCCESS)
     {
-        std::cout << "Error opening XML file!" << std::endl;
+        std::cout << "Error opening TASK XML file!" << std::endl;
         return false;
     }
 
@@ -71,4 +71,10 @@ Agent Task::get_agent(int id) const
         return agents[id];
     else
         return Agent();
+}
+
+void Task::prt_agents(){
+	for(Agent a:agents){
+		cout<<a.id<<":"<<a.start_id<<"->"<<a.goal_id<<endl;
+	}
 }

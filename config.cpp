@@ -4,6 +4,7 @@ Config::Config()
 {
     connectdness = CN_CONNECTEDNESS;
     use_cardinal = CN_USE_CARDINAL;
+	use_edge_split = CN_USE_EDGE_SPLIT;
     agent_size = CN_AGENT_SIZE;
     timelimit = CN_TIMELIMIT;
     focal_weight = CN_FOCAL_WEIGHT;
@@ -231,5 +232,50 @@ void Config::getConfig(const char *fileName)
         stream.clear();
         stream.str("");
     }
+	
+	element = algorithm->FirstChildElement("use_edge_split");
+    if (!element)
+    {
+        cout << "Error! No 'use_edge_split' element found inside '"<<CNS_TAG_ALGORITHM<<"' section. It's compared to '"<<CN_USE_EDGE_SPLIT<<"'."<<endl;
+        use_edge_split = CN_USE_EDGE_SPLIT;
+    }
+    else
+    {
+        string value = element->GetText();
+        if(value.compare("true") == 0 || value.compare("1") == 0)
+        {
+            use_edge_split = true;
+        }
+        else if(value.compare("false") == 0 || value.compare("0") == 0)
+        {
+            use_edge_split = false;
+        }
+        else
+        {
+            cout << "Error! Wrong 'use_edge_split' value found inside '"<<CNS_TAG_ALGORITHM<<"' section. It's compared to '"<<CN_USE_EDGE_SPLIT<<"'."<<endl;
+            use_edge_split = CN_USE_EDGE_SPLIT;
+        }
+    }
+	/*
+	element = algorithm->FirstChildElement("resolution");
+    if (!element)
+    {
+        cout << "Error! No 'resolution' element found inside '"<<CNS_TAG_ALGORITHM<<"' section. It's compared to '"<<CN_RESOLUTION<<"'."<<endl;
+        resolution = CN_RESOLUTION;
+    }
+    else
+    {
+        auto value = element->GetText();
+        stream<<value;
+        stream>>resolution;
+        if(resolution < 0 || resolution > agent_size)
+        {
+            cout << "Error! Wrong 'resolution' value found inside '"<<CNS_TAG_ALGORITHM<<"' section. It's compared to '"<<CN_RESOLUTION<<"'."<<endl;
+            resolution = CN_RESOLUTION;
+        }
+        stream.clear();
+        stream.str("");
+    }
+	*/
     return;
 }

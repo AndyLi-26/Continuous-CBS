@@ -1,6 +1,7 @@
 #ifndef CBS_H
 #define CBS_H
 #include <chrono>
+#include <math.h>
 #include "structs.h"
 #include "map.h"
 #include "task.h"
@@ -32,7 +33,12 @@ public:
     double get_cost(CBS_Node node, int agent_id);
     std::vector<sPath> get_paths(CBS_Node *node, unsigned int agents_size);
     Conflict get_conflict(std::list<Conflict> &conflicts);
-	void split_edge(Conflict conflict);
+	Move modify_move(Move move,int new_id);
+	Vector2D split_edge(Conflict conflict);
+	Constraint get_split_constraint(int agent, Move move1, Move move2);
+	void prt_move(Move m1);
+	void prt_constraint(Constraint c);
+	void prt_conflict(Conflict conflict);
     CBS_Tree tree;
     SIPP planner;
     Solution solution;

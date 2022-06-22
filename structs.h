@@ -34,6 +34,7 @@ struct gNode
 	int agent; //visible to some agent, -1 is everyone
     std::vector<int> neighbors;
     gNode(double i_ = -1, double j_ = -1, int a_=-1):i(i_), j(j_),agent(a_) {}
+	
     ~gNode() { neighbors.clear(); }
 };
 
@@ -51,6 +52,29 @@ struct Node
     {
         return this->g < other.g;
     }
+	struct eqnode 
+	{
+		bool operator()(const Node* s1, const Node* s2) const 
+		{
+
+			return (s1 == s2) || (s1 && s2 &&
+				s1->id == s2->id) || (s1 && s2 &&
+				abs(s1->i - s2->i)<CN_PRECISION && 
+				abs(s1->j - s2->j)<CN_PRECISION
+				&& s1->agent == s2->agent);
+		}
+	};
+
+	struct NodeHasher 
+	{
+		std::size_t operator()(const Node* n) const 
+		{
+			size_t a1 = std::hash<int>()(n->i);
+			size_t a2 = std::hash<int>()(n->j);
+			size_t a3 = std::hash<int>()(n->agent);
+			return (a1 ^ (a2 << 1)*(a3 << 1));
+		}
+	};
 };
 
 struct Position

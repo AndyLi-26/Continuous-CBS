@@ -11,7 +11,7 @@
 #include "const.h"
 #include <fstream>
 #include "map.h"
-
+using namespace std;
 class Task
 {
 private:
@@ -30,6 +30,7 @@ public:
     }
     Task(int _agent_num);
 	int get_agent_num() {return agents.size();}
+	void prt_agents();
 };
 
 #endif // TASK_H

@@ -10,6 +10,7 @@
 #include "tinyxml2.h"
 #include "const.h"
 #include "structs.h"
+#include <boost/unordered_map.hpp>
 
 class Map
 {
@@ -25,6 +26,11 @@ private:
     bool get_grid(const char* FileName);
     bool get_roadmap(const char* FileName);
 	int nodes_num; //public node limit
+	void prt_nodes();
+	typedef std::pair<std::pair<double,double>,int> node_index;
+	typedef boost::unordered_map<node_index,int> hast_table;
+	hast_table nodes_table;
+	
 public:
     Map(double size, int k){ agent_size = size; connectedness = k; }
     ~Map(){}
@@ -37,10 +43,12 @@ public:
     int  get_id(int i, int j) const;
     double get_i (int id) const;
     double get_j (int id) const;
-	int add_node(int i, int j, int node1, int node2,int agent);
+	int add_node(double i, double j, int node1, int node2,int agent);
     std::vector<Node> get_valid_moves(int id) const;
+	double fit2grid(double val){return round(val/CN_RESOLUTION)*CN_RESOLUTION;}
     void print_map();
     void printPPM();
+	void prt_ind(node_index n);
 };
 
 #endif // MAP_H

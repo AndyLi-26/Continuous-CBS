@@ -6,7 +6,7 @@ bool Map::get_map(const char* FileName)
     tinyxml2::XMLDocument doc;
     if (doc.LoadFile(FileName) != tinyxml2::XMLError::XML_SUCCESS)
     {
-        std::cout << "Error opening XML file!" << std::endl;
+        std::cout << "Error opening MAP XML file!" << std::endl;
         return false;
     }
     root = doc.FirstChildElement(CNS_TAG_ROOT);
@@ -244,17 +244,21 @@ bool Map::get_roadmap(const char *FileName)
         stream << value.substr(0, it);
         double i;
         stream >> i;
+		i=fit2grid(i);
         stream.str("");
         stream.clear();
         value.erase(0, ++it);
         stream << value;
         double j;
         stream >> j;
-        gNode node;
-        node.i = i;
-        node.j = j;
+		j=fit2grid(j);
+        gNode node(i,j);
         nodes.push_back(node);
+		//nodes_table.insert(n);
+		node_index ind(std::make_pair(i,j),-1);
+		nodes_table[ind]=nodes.size()-1;
     }
+	prt_nodes();
 	nodes_num=nodes.size();
     for(element = root->FirstChildElement("edge"); element; element = element->NextSiblingElement("edge"))
     {
@@ -284,6 +288,7 @@ bool Map::get_roadmap(const char *FileName)
             node.j = nodes[cur.neighbors[i]].j;
             node.id = cur.neighbors[i];
             neighbors.push_back(node);
+			
         }
         valid_moves.push_back(neighbors);
     }
@@ -291,9 +296,23 @@ bool Map::get_roadmap(const char *FileName)
     return true;
 }
 
-int Map::add_node(int i, int j, int node1, int node2,int agent)
+int Map::add_node(double i, double j, int node1, int node2,int agent)
 {
-	//add nodes
+	hast_table::iterator it;
+	node_index ind(std::make_pair(i,j),agent);
+	//check if exist
+	it = nodes_table.find(ind);
+	std::cout<<std::endl<<std::endl<<"info"<<std::endl;
+	prt_ind(ind);
+	//std::cout<<"("<<ind.first.first<<","<<ind.first.second<<") a:"<<ind.second<<std::endl;
+	prt_nodes();
+	if (it != nodes_table.end())
+	{
+		//Node existing_node = (*it);
+		return nodes_table[ind];
+	}
+	std::cout<<"inserted"<<std::endl;
+	//add nodes to node list
 	int nodeid=nodes.size();
 	gNode tempnode(i,j,agent);
     nodes.push_back(tempnode);
@@ -302,17 +321,8 @@ int Map::add_node(int i, int j, int node1, int node2,int agent)
 	nodes[node1].neighbors.push_back(nodeid);
 	nodes[node2].neighbors.push_back(nodeid);
 	
-	/*
-	std::vector<Node> new_moves;
-	Node copy_node1;
-	copy_node.i=nodes[node1].i;
-	copy_node.j=nodes[node1].j;
-	new_moves.push_back(copy_node1);
-	Node copy_node2;
-	copy_node.i=nodes[node2].i;
-	copy_node.j=nodes[node2].j;
-	new_moves.push_back(copy_node2);
-	valid_moves.push_back(new_moves);*/
+	//add node to hash_table
+	nodes_table[ind]=nodeid;
 	
 	//add edges
 	Node node;
@@ -472,4 +482,16 @@ bool Map::check_line(int x1, int y1, int x2, int y2)
         }
     }
     return true;
+}
+void Map::prt_ind(node_index n){
+	std::cout<<" ("<<n.first.first<<","<<n.first.second<<") a:"<<n.second<<std::endl;
+}
+
+void Map::prt_nodes(){
+	hast_table::iterator it;
+	std::cout<<"full_table"<<std::endl;
+	for(auto it=nodes_table.begin(); it!=nodes_table.end(); ++it){
+		std::cout<<"id:"<<it->second;
+		prt_ind(it->first);
+	}
 }
