@@ -34,10 +34,12 @@ public:
     std::vector<sPath> get_paths(CBS_Node *node, unsigned int agents_size);
     Conflict get_conflict(std::list<Conflict> &conflicts);
 	Move modify_move(Move move,int new_id);
+	bool validNewNode(Vector2D X1,Vector2D X2,Vector2D New);
 	Vector2D split_edge(Conflict conflict);
 	Constraint get_split_constraint(int agent, Move move1, Move move2);
 	void prt_move(Move m1);
 	void prt_constraint(Constraint c);
+	void prt_constraints(std::list<Constraint> constraints);
 	void prt_conflict(Conflict conflict);
     CBS_Tree tree;
     SIPP planner;

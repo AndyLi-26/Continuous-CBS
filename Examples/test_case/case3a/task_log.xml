@@ -1,8 +1,24 @@
 <?xml version="1.0" ?>
 <root>
-    <agent start_id="0" goal_id="1"/>
-    <agent start_id="2" goal_id="3"/>
+    <agent start_id="6" goal_id="7"/>
+    <agent start_id="4" goal_id="5"/>
     <log>
-        <summary time="1.7499999999999998e-05" flowtime="200" makespan="100"/>
+        <summary time="0.0056934999999999998" flowtime="271.58533983844706" makespan="161.38533983844707"/>
+        <agent number="0">
+            <path duration="161.38533983844707">
+                <section number="0" start_i="95" start_j="150" goal_i="95" goal_j="150" duration="51.200000034474144"/>
+                <section number="1" start_i="95" start_j="150" goal_i="100.10000000000001" goal_j="150" duration="5.1000000000000085"/>
+                <section number="2" start_i="100.10000000000001" start_j="150" goal_i="100.10000000000001" goal_j="150" duration="0.18533980397290861"/>
+                <section number="3" start_i="100.10000000000001" start_j="150" goal_i="100.10000000000001" goal_j="50" duration="100"/>
+                <section number="4" start_i="100.10000000000001" start_j="50" goal_i="105" goal_j="50" duration="4.9000000000000057"/>
+            </path>
+        </agent>
+        <agent number="1">
+            <path duration="110.19999999999999">
+                <section number="0" start_i="105" start_j="100" goal_i="99.900000000000006" goal_j="100" duration="5.0999999999999943"/>
+                <section number="1" start_i="99.900000000000006" start_j="100" goal_i="99.900000000000006" goal_j="200" duration="100"/>
+                <section number="2" start_i="99.900000000000006" start_j="200" goal_i="105" goal_j="200" duration="5.0999999999999943"/>
+            </path>
+        </agent>
     </log>
 </root>

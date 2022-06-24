@@ -258,7 +258,7 @@ bool Map::get_roadmap(const char *FileName)
 		node_index ind(std::make_pair(i,j),-1);
 		nodes_table[ind]=nodes.size()-1;
     }
-	prt_nodes();
+	//prt_nodes();
 	nodes_num=nodes.size();
     for(element = root->FirstChildElement("edge"); element; element = element->NextSiblingElement("edge"))
     {
@@ -302,10 +302,10 @@ int Map::add_node(double i, double j, int node1, int node2,int agent)
 	node_index ind(std::make_pair(i,j),agent);
 	//check if exist
 	it = nodes_table.find(ind);
-	std::cout<<std::endl<<std::endl<<"info"<<std::endl;
-	prt_ind(ind);
+	//std::cout<<std::endl<<std::endl<<"info"<<std::endl;
+	//prt_ind(ind);
 	//std::cout<<"("<<ind.first.first<<","<<ind.first.second<<") a:"<<ind.second<<std::endl;
-	prt_nodes();
+	//prt_nodes();
 	if (it != nodes_table.end())
 	{
 		//Node existing_node = (*it);
