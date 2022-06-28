@@ -2,14 +2,14 @@
 <root>
 	<algorithm>
 		<use_cardinal>true</use_cardinal>
-		<use_disjoint_splitting>true</use_disjoint_splitting>
+		<use_disjoint_splitting>false</use_disjoint_splitting>
 		<hlh_type>2</hlh_type>
 		<connectedness>2</connectedness>
 		<focal_weight>1.0</focal_weight>
 		<agent_size>0.353553</agent_size>
 		<timelimit>30</timelimit>
 		<precision>0.0000001</precision>
-		<agent_number>10</agent_number>
+		<agent_number>20</agent_number>
 		<use_edge_split>true</use_edge_split>
 	</algorithm>
 </root>

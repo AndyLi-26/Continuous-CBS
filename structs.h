@@ -196,7 +196,7 @@ struct CBS_Node
 {
     std::vector<sPath> paths;
     CBS_Node* parent;
-    Constraint constraint;
+    std::list<Constraint> constraint;
     Constraint positive_constraint;
     int id;
     std::string id_str;
@@ -208,7 +208,7 @@ struct CBS_Node
     std::list<Conflict> conflicts;
     std::list<Conflict> semicard_conflicts;
     std::list<Conflict> cardinal_conflicts;
-    CBS_Node(std::vector<sPath> _paths = {}, CBS_Node* _parent = nullptr, Constraint _constraint = Constraint(), double _cost = 0, int _conflicts_num = 0, int total_cons_ = 0)
+    CBS_Node(std::vector<sPath> _paths = {}, CBS_Node* _parent = nullptr, std::list<Constraint> _constraint = std::list<Constraint>(0), double _cost = 0, int _conflicts_num = 0, int total_cons_ = 0)
         :paths(_paths), parent(_parent), constraint(_constraint), cost(_cost), conflicts_num(_conflicts_num), total_cons(total_cons_)
     {
         low_level_expanded = 0;

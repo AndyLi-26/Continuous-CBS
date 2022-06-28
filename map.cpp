@@ -311,7 +311,7 @@ int Map::add_node(double i, double j, int node1, int node2,int agent)
 		//Node existing_node = (*it);
 		return nodes_table[ind];
 	}
-	std::cout<<"inserted"<<std::endl;
+	//std::cout<<"inserted"<<std::endl;
 	//add nodes to node list
 	int nodeid=nodes.size();
 	gNode tempnode(i,j,agent);

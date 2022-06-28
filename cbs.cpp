@@ -64,7 +64,7 @@ bool CBS::check_conflict(Move move1, Move move2)
         B += VB*(startTimeA - startTimeB);
         startTimeB = startTimeA;
     }
-    double r(2*CN_AGENT_SIZE);
+    double r(2*config.agent_size);
     Vector2D w(B - A);
     double c(w*w - r*r);
     if(c < 0)
@@ -217,7 +217,7 @@ Constraint CBS::get_constraint(int agent, Move move1, Move move2)
     }
     if(delta < config.precision/2.0 + CN_EPSILON && check_conflict(move1, move2))
     {
-        move1.t1 = fmin(move1.t1 + delta*2+CN_AGENT_SIZE*2, move2.t2);
+        move1.t1 = fmin(move1.t1 + delta*2+config.agent_size*2, move2.t2);
         move1.t2 = move1.t1 + endTimeA - startTimeA;
     }
     return Constraint(agent, startTimeA, move1.t1, move1.id1, move1.id2);
@@ -299,7 +299,7 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
         else
             conflict = get_conflict(conflicts);
 		Vector2D new_ids=(-1,-1);
-		prt_conflict(conflict);
+		//prt_conflict(conflict);
 		if(config.use_edge_split)
 			new_ids=split_edge(conflict);
 		
@@ -308,21 +308,28 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
         expanded++;
 
         std::list<Constraint> constraintsA = get_constraints(&node, conflict.agent1);
+        std::list<Constraint> constraintsA_New;
 		Constraint constraintA,temp;
-		prt_constraints(constraintsA);
+		//prt_constraints(constraintsA);
+		//cout<<"+"<<endl;
 		if (config.use_edge_split and new_ids.i!=-1){
-			cout<<"move1: ";
-			prt_move(conflict.move1);
+			//cout<<"move1: ";
+			//prt_move(conflict.move1);
 			Move temp_move=modify_move(conflict.move1,new_ids.i);
-			cout<<"new_m: ";
-			prt_move(temp_move);
+			//cout<<"new_m: ";
+			//prt_move(temp_move);
 			temp = get_constraint(conflict.agent1, temp_move, conflict.move2);
 			constraintsA.push_back(temp);
-			prt_constraint(temp);
+			constraintsA_New.push_back(temp);
+			//prt_constraint(temp);
 		}
 		constraintA = get_constraint(conflict.agent1, conflict.move1, conflict.move2);
         constraintsA.push_back(constraintA);
-		prt_constraint(constraintA);
+        constraintsA_New.push_back(constraintA);
+		//prt_constraint(constraintA);
+		//cout<<"--after--";
+		//prt_constraints(constraintsA);
+		//cout<<"----"<<endl;
         sPath pathA;
         //if(!config.use_cardinal || !config.cache_paths)
         {
@@ -334,23 +341,33 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
         //    pathA = conflict.path1;
 
         std::list<Constraint> constraintsB = get_constraints(&node, conflict.agent2);
+        std::list<Constraint> constraintsB_New;
+		
 		Constraint constraintB;
-		prt_constraints(constraintsB);
+		//prt_constraints(constraintsB);
+		//cout<<"+"<<endl;
 		if (config.use_edge_split and new_ids.j!=-1){
-			cout<<"move2: ";
-			prt_move(conflict.move2);
+			//cout<<"move2: ";
+			//prt_move(conflict.move2);
 			Move temp_move=modify_move(conflict.move2,new_ids.j);
-			cout<<"new_m: ";
-			prt_move(temp_move);
+			//cout<<"new_m: ";
+			//prt_move(temp_move);
 			temp= get_constraint(conflict.agent2, temp_move, conflict.move1);
 			constraintsB.push_back(temp);
-			prt_constraint(temp);
+			constraintsB_New.push_back(temp);
+			//prt_constraint(temp);
 		}
+		
 		constraintB = get_constraint(conflict.agent2, conflict.move2, conflict.move1);
         constraintsB.push_back(constraintB);
-		prt_constraint(constraintB);
-		cout<<endl;
-		cout<<flush;
+        constraintsB_New.push_back(constraintB);
+		
+		//prt_constraint(constraintB);
+		//cout<<"--after--";
+		//prt_constraints(constraintsB);
+		//cout<<"----"<<endl;
+		//cout<<endl;
+		//cout<<flush;
         sPath pathB;
         //if(!config.use_cardinal || !config.cache_paths)
         {
@@ -359,8 +376,9 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
             low_level_expanded += pathB.expanded;
         }
 
-        CBS_Node right({pathA}, parent, constraintA, node.cost + pathA.cost - get_cost(node, conflict.agent1), 0, node.total_cons + 1);
-        CBS_Node left({pathB}, parent, constraintB, node.cost + pathB.cost - get_cost(node, conflict.agent2), 0, node.total_cons + 1);
+        CBS_Node right({pathA}, parent, constraintsA_New, node.cost + pathA.cost - get_cost(node, conflict.agent1), 0, node.total_cons + constraintsA_New.size());
+        CBS_Node left({pathB}, parent, constraintsB_New, node.cost + pathB.cost - get_cost(node, conflict.agent2), 0, node.total_cons  + constraintsB_New.size());
+		
         Constraint positive;
         bool inserted = false;
         bool left_ok = true, right_ok = true;
@@ -625,8 +643,12 @@ std::list<Constraint> CBS::get_constraints(CBS_Node *node, int agent_id)
     std::list<Constraint> constraints(0);
     while(curNode->parent != nullptr)
     {
-        if(agent_id < 0 || curNode->constraint.agent == agent_id)
-            constraints.push_back(curNode->constraint);
+		for (Constraint c:curNode->constraint){
+			if(agent_id < 0 || c.agent == agent_id)
+				constraints.push_back(c);
+		}
+		//if(agent_id < 0 || curNode->constraint.agent == agent_id)
+				//constraints.push_back(curNode->constraint);
         if(curNode->positive_constraint.agent == agent_id)
             constraints.push_back(curNode->positive_constraint);
         curNode = curNode->parent;
@@ -644,19 +666,19 @@ Conflict CBS::check_paths(const sPath &pathA, const sPath &pathB)
         double dist = sqrt(pow(map->get_i(nodesA[a].id) - map->get_i(nodesB[b].id), 2) + pow(map->get_j(nodesA[a].id) - map->get_j(nodesB[b].id), 2)) - CN_EPSILON;
         if(a < nodesA.size() - 1 && b < nodesB.size() - 1) // if both agents have not reached their goals yet
         {
-            if(dist < (nodesA[a+1].g - nodesA[a].g) + (nodesB[b+1].g - nodesB[b].g) + CN_AGENT_SIZE*2)
+            if(dist < (nodesA[a+1].g - nodesA[a].g) + (nodesB[b+1].g - nodesB[b].g) + config.agent_size*2)
                 if(check_conflict(Move(nodesA[a], nodesA[a+1]), Move(nodesB[b], nodesB[b+1])))
                     return Conflict(pathA.agentID, pathB.agentID, Move(nodesA[a], nodesA[a+1]), Move(nodesB[b], nodesB[b+1]), std::min(nodesA[a].g, nodesB[b].g));
         }
         else if(a == nodesA.size() - 1) // if agent A has already reached the goal
         {
-            if(dist < (nodesB[b+1].g - nodesB[b].g) + CN_AGENT_SIZE*2)
+            if(dist < (nodesB[b+1].g - nodesB[b].g) + config.agent_size*2)
                 if(check_conflict(Move(nodesA[a].g, CN_INFINITY, nodesA[a].id, nodesA[a].id), Move(nodesB[b], nodesB[b+1])))
                     return Conflict(pathA.agentID, pathB.agentID, Move(nodesA[a].g, CN_INFINITY, nodesA[a].id, nodesA[a].id), Move(nodesB[b], nodesB[b+1]), std::min(nodesA[a].g, nodesB[b].g));
         }
         else if(b == nodesB.size() - 1) // if agent B has already reached the goal
         {
-            if(dist < (nodesA[a+1].g - nodesA[a].g) + CN_AGENT_SIZE*2)
+            if(dist < (nodesA[a+1].g - nodesA[a].g) + config.agent_size*2)
                 if(check_conflict(Move(nodesA[a], nodesA[a+1]), Move(nodesB[b].g, CN_INFINITY, nodesB[b].id, nodesB[b].id)))
                     return Conflict(pathA.agentID, pathB.agentID, Move(nodesA[a], nodesA[a+1]), Move(nodesB[b].g, CN_INFINITY, nodesB[b].id, nodesB[b].id), std::min(nodesA[a].g, nodesB[b].g));
         }
@@ -733,12 +755,12 @@ std::vector<sPath> CBS::get_paths(CBS_Node *node, unsigned int agents_size)
 bool CBS::validNewNode(Vector2D X1,Vector2D X2,Vector2D New){
 	//check if new node is still in the way of original path
 	// return true if valid
-	Vector2D line1(New+X1),line2(New+X2),lineb(X1+X2);
+	Vector2D line1(New-X1),line2(New-X2),lineb(X1-X2);
 	double side1(sqrt(line1*line1)),side2(sqrt(line2*line2)),base(sqrt(lineb*lineb));
 	double s((side1+side2+base)/2);
 	double A(sqrt(s*(s-side1)*(s-side2)*(s-base)));//heron's formula
 	double h=2*A/base;
-	return h>2*CN_AGENT_SIZE;
+	return h>2*config.agent_size;
 }
 
 Vector2D CBS::split_edge(Conflict conflict){
@@ -763,7 +785,7 @@ Vector2D CBS::split_edge(Conflict conflict){
 			
 			new_id=map->add_node(new_i, new_j, node11, node12,conflict.agent1);
 			h_values.add_node(new_id,conflict.agent1,node12);
-			cout<<"node:"<<new_id<<"@("<<new_i<<","<<new_j<<") a:"<<conflict.agent1;
+			//cout<<"node:"<<new_id<<"@("<<new_i<<","<<new_j<<") a:"<<conflict.agent1;
 			new_nodes.i=new_id;
 			//}
 		}
@@ -776,11 +798,12 @@ Vector2D CBS::split_edge(Conflict conflict){
 			
 			new_id=map->add_node(new_i, new_j, node21, node22,conflict.agent2);
 			h_values.add_node(new_id,conflict.agent2,node22);
-			cout<<" &&&:"<<new_id<<"@("<<new_i<<","<<new_j<<") a:"<<conflict.agent2;
+			//cout<<" &&&:"<<new_id<<"@("<<new_i<<","<<new_j<<") a:"<<conflict.agent2;
 			new_nodes.j=new_id;
 			//}
 		}
 	}
+	
 	else if(node12 != node22 and node11 != node21){//edge conflict
 		double startTimeA(conflict.move1.t1), endTimeA(conflict.move1.t2), startTimeB(conflict.move2.t1), endTimeB(conflict.move2.t2);
 		double m1i1(map->get_i(conflict.move1.id1)), m1i2(map->get_i(conflict.move1.id2)), m1j1(map->get_j(conflict.move1.id1)), m1j2(map->get_j(conflict.move1.id2));
@@ -799,7 +822,7 @@ Vector2D CBS::split_edge(Conflict conflict){
 			B += VB*(startTimeA - startTimeB);
 			startTimeB = startTimeA;
 		}
-		double r(2*CN_AGENT_SIZE);
+		double r(2*config.agent_size);
 		Vector2D w(B - A);
 		double c(w*w - r*r);  //doubting, maybe bug here
 		Vector2D v(VA - VB);
@@ -809,21 +832,21 @@ Vector2D CBS::split_edge(Conflict conflict){
 		double ctime = (b - sqrt(dscr))/a;
 		double norm_coef1=sqrt(VA*VA);
 		double norm_coef2=sqrt(VB*VB);
-		Vector2D delta(CN_EPSILON,CN_EPSILON);
-		Vector2D new_node1=A+VA*(ctime-CN_AGENT_SIZE/norm_coef1)-delta;
-		Vector2D new_node2=B+VB*(ctime-CN_AGENT_SIZE/norm_coef2)-delta;
-		cout<<"edge:";
+		//Vector2D delta(CN_RESOLUTION,CN_RESOLUTION);
+		Vector2D new_node1=A+VA*(ctime-(2*config.agent_size+CN_RESOLUTION)/norm_coef1);
+		Vector2D new_node2=B+VB*(ctime-(2*config.agent_size+CN_RESOLUTION)/norm_coef2);
+		//cout<<"edge:";
 		int new_id;
 		Vector2D A_dis,temp;
 		if (node11!=node12){
 			//A_dis=Vector2D(new_node1.i),new_node1.j));
 			//temp=Vector2D(map->get_i(node11),map->get_j(node11));
 			//if (A_dis*temp>CN_MAP_RESOLUTION) {
-			Vector2D X1(map->get_i(node11),map->get_j(node11)),X2(map->get_i(node12),map->get_j(node12)),New(map->fit2grid(new_node1.i),map->fit2grid(new_node1.j));
+			Vector2D X1(map->get_i(node21),map->get_j(node21)),X2(map->get_i(node22),map->get_j(node22)),New(map->fit2grid(new_node1.i),map->fit2grid(new_node1.j));
 			if (validNewNode(X1,X2,New)){
 				new_id=map->add_node(New.i,New.j, node11, node12,conflict.agent1);
 				h_values.add_node(new_id,conflict.agent1,node12);
-				cout<<new_id<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent1;
+				//cout<<new_id<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent1;
 				new_nodes.i=new_id;
 			}
 			//}
@@ -832,11 +855,11 @@ Vector2D CBS::split_edge(Conflict conflict){
 			//A_dis=Vector2D(map->fit2grid(new_node2.i),map->fit2grid(new_node2.j));
 			//temp=Vector2D(map->get_i(node21),map->get_j(node21));
 			//if (A_dis*temp>CN_MAP_RESOLUTION) {
-			Vector2D X1(map->get_i(node21),map->get_j(node21)),X2(map->get_i(node22),map->get_j(node22)),New(map->fit2grid(new_node2.i),map->fit2grid(new_node2.j));
+			Vector2D X1(map->get_i(node11),map->get_j(node11)),X2(map->get_i(node12),map->get_j(node12)),New(map->fit2grid(new_node2.i),map->fit2grid(new_node2.j));
 			if (validNewNode(X1,X2,New)){
 				new_id=map->add_node(New.i,New.j, node21, node22,conflict.agent2);
 				h_values.add_node(new_id,conflict.agent2,node22);
-				cout<<" &&&:"<<new_id<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent2;
+				//cout<<" &&&:"<<new_id<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent2;
 				new_nodes.j=new_id;
 			}
 			//}
@@ -844,7 +867,8 @@ Vector2D CBS::split_edge(Conflict conflict){
 	}
 	else
 		assert(false);
-	cout<<endl;
+	
+	//cout<<endl;
 	return new_nodes;
 }
 
@@ -874,7 +898,6 @@ void CBS::prt_constraints(std::list<Constraint> constraints){
 	cout<<endl<<"full constraint table:"<<endl;
 	for(Constraint c:constraints)
 		prt_constraint(c);
-	cout<<"new:"<<endl;
 }
 
 Constraint CBS::get_split_constraint(int agent, Move move1, Move move2){
