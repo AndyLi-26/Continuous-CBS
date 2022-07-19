@@ -1,6 +1,6 @@
 import sys
 if __name__=="__main__":
-    i=int(sys.argv[1])
+    i=int(sys.argv[1]) if len(sys.argv)>1 else 0
     s='''    <edge id="e{}" source="n{}" target="n{}">
       <data key="key1">1</data>	
     </edge>'''

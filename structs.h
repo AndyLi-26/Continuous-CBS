@@ -436,6 +436,11 @@ public:
     int classify(Point &pO, Point &p1)
     {
         Point p2 = *this;
+		if (pO == p2)
+            return 5;//ORIGIN;
+        if (p1 == p2)
+            return 6;//DESTINATION;
+		
         Point a = p1 - pO;
         Point b = p2 - pO;
         double sa = a.i * b.j - b.i * a.j;
@@ -447,10 +452,7 @@ public:
             return 3;//BEHIND;
         if ((a.i*a.i + a.j*a.j) < (b.i*b.i + b.j*b.j))
             return 4;//BEYOND;
-        if (pO == p2)
-            return 5;//ORIGIN;
-        if (p1 == p2)
-            return 6;//DESTINATION;
+
         return 7;//BETWEEN;
     }
 };
