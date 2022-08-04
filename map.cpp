@@ -288,7 +288,6 @@ bool Map::get_roadmap(const char *FileName)
             node.j = nodes[cur.neighbors[i]].j;
             node.id = cur.neighbors[i];
             neighbors.push_back(node);
-			
         }
         valid_moves.push_back(neighbors);
     }
@@ -328,8 +327,21 @@ int Map::add_node(double i, double j, int node1, int node2,int agent)
 	Node node;
 	node.i=i;
 	node.j=j;
-	node.agent=agent;
+	node.positive_agent=agent;
 	node.id=nodeid;
+	
+	//break up the original edge
+	for (int n=0;n<valid_moves[node1].size();++n){
+		if (valid_moves[node1][n].id==node2){
+			valid_moves[node1][n].negtive_list.push_back(agent);
+		}
+	}
+	
+	for (int n=0;n<valid_moves[node2].size();++n){
+		if (valid_moves[node2][n].id==node1){
+			valid_moves[node2][n].negtive_list.push_back(agent);
+		}
+	}
 	
 	valid_moves[node1].push_back(node);
 	valid_moves[node2].push_back(node);
@@ -345,6 +357,9 @@ int Map::add_node(double i, double j, int node1, int node2,int agent)
     valid2.id = node2;
     neighbors.push_back(valid2);
 	valid_moves.push_back(neighbors);
+
+
+	
 	return nodeid;
 }
 

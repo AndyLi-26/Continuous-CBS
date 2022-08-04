@@ -157,11 +157,15 @@ void Config::getConfig(const char *fileName)
         auto value = element->GetText();
         stream<<value;
         stream>>agent_size;
-        if(agent_size < 0 || agent_size > 0.5)
+        if(agent_size < 0)
         {
             cout << "Error! Wrong 'agent_size' value found inside '"<<CNS_TAG_ALGORITHM<<"' section. It's compared to '"<<CN_AGENT_SIZE<<"'."<<endl;
             agent_size = CN_AGENT_SIZE;
         }
+		if (agent_size > 0.5)
+		{
+			cout<< "agent size is larger than 0.5, forcing it to be:"<<agent_size<<endl;
+		}
         stream.clear();
         stream.str("");
     }

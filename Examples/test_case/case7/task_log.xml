@@ -7,11 +7,13 @@
     <agent start_id="3" goal_id="10"/>
     <agent start_id="5" goal_id="11"/>
     <log>
-        <summary time="0.0027388" flowtime="234.13708392959882" makespan="48.284271247461902"/>
+        <summary time="0.0158862" flowtime="443.75440084787965" makespan="106.16652227930561"/>
         <agent number="0">
-            <path duration="29.284270187213131">
-                <section number="0" start_i="100" start_j="100" goal_i="100" goal_j="100" duration="0.99999893975122944"/>
-                <section number="1" start_i="100" start_j="100" goal_i="120" goal_j="120" duration="28.284271247461902"/>
+            <path duration="93.438600204613749">
+                <section number="0" start_i="100" start_j="100" goal_i="118.60000000000001" goal_j="118.60000000000001" duration="26.30437226013958"/>
+                <section number="1" start_i="118.60000000000001" start_j="118.60000000000001" goal_i="118.60000000000001" goal_j="118.60000000000001" duration="21.727922085592297"/>
+                <section number="2" start_i="118.60000000000001" start_j="118.60000000000001" goal_i="118.60000000000001" goal_j="118.60000000000001" duration="1.0000000003666969"/>
+                <section number="3" start_i="118.60000000000001" start_j="118.60000000000001" goal_i="150" goal_j="150" duration="44.406305858515175"/>
             </path>
         </agent>
         <agent number="1">
@@ -22,31 +24,34 @@
             </path>
         </agent>
         <agent number="2">
-            <path duration="30">
+            <path duration="32.72792212665081">
                 <section number="0" start_i="100" start_j="80" goal_i="100" goal_j="90" duration="10"/>
-                <section number="1" start_i="100" start_j="90" goal_i="100" goal_j="100" duration="10"/>
-                <section number="2" start_i="100" start_j="100" goal_i="90" goal_j="100" duration="10"/>
+                <section number="1" start_i="100" start_j="90" goal_i="100" goal_j="90" duration="2.7279221266508102"/>
+                <section number="2" start_i="100" start_j="90" goal_i="100" goal_j="100" duration="10"/>
+                <section number="3" start_i="100" start_j="100" goal_i="90" goal_j="100" duration="10"/>
             </path>
         </agent>
         <agent number="3">
-            <path duration="48.284271247461902">
-                <section number="0" start_i="80" start_j="120" goal_i="90" goal_j="120" duration="10"/>
-                <section number="1" start_i="90" start_j="120" goal_i="100" goal_j="120" duration="10"/>
-                <section number="2" start_i="100" start_j="120" goal_i="120" goal_j="100" duration="28.284271247461902"/>
+            <path duration="106.16652227930561">
+                <section number="0" start_i="80" start_j="150" goal_i="90" goal_j="150" duration="10"/>
+                <section number="1" start_i="90" start_j="150" goal_i="100" goal_j="150" duration="10"/>
+                <section number="2" start_i="100" start_j="150" goal_i="118.60000000000001" goal_j="131.40000000000001" duration="26.304372260139573"/>
+                <section number="3" start_i="118.60000000000001" start_j="131.40000000000001" goal_i="118.60000000000001" goal_j="131.40000000000001" duration="15.455844160650855"/>
+                <section number="4" start_i="118.60000000000001" start_j="131.40000000000001" goal_i="150" goal_j="100" duration="44.406305858515182"/>
             </path>
         </agent>
         <agent number="4">
-            <path duration="48.284271247461902">
-                <section number="0" start_i="90" start_j="120" goal_i="100" goal_j="120" duration="10"/>
-                <section number="1" start_i="100" start_j="120" goal_i="120" goal_j="100" duration="28.284271247461902"/>
-                <section number="2" start_i="120" start_j="100" goal_i="130" goal_j="100" duration="10"/>
+            <path duration="90.710678118654755">
+                <section number="0" start_i="90" start_j="150" goal_i="100" goal_j="150" duration="10"/>
+                <section number="1" start_i="100" start_j="150" goal_i="150" goal_j="100" duration="70.710678118654755"/>
+                <section number="2" start_i="150" start_j="100" goal_i="160" goal_j="100" duration="10"/>
             </path>
         </agent>
         <agent number="5">
-            <path duration="48.284271247461902">
-                <section number="0" start_i="100" start_j="120" goal_i="120" goal_j="100" duration="28.284271247461902"/>
-                <section number="1" start_i="120" start_j="100" goal_i="130" goal_j="100" duration="10"/>
-                <section number="2" start_i="130" start_j="100" goal_i="140" goal_j="100" duration="10"/>
+            <path duration="90.710678118654755">
+                <section number="0" start_i="100" start_j="150" goal_i="150" goal_j="100" duration="70.710678118654755"/>
+                <section number="1" start_i="150" start_j="100" goal_i="160" goal_j="100" duration="10"/>
+                <section number="2" start_i="160" start_j="100" goal_i="170" goal_j="100" duration="10"/>
             </path>
         </agent>
     </log>

@@ -1,8 +1,9 @@
 clc; clear all; close all;
 obj = VideoWriter("demo.mp4", 'MPEG-4');
 obj.Quality = 100;
-obj.FrameRate = 60;
+obj.FrameRate = 20;
 open(obj);
+agent_size=4.5;
 %draw map
 global nodes resolution
 resolution=0.5;
@@ -54,10 +55,10 @@ for t=1:summary(3)/resolution
     for a=1:agents
         p=paths{a};
         if size(p,1)>t
-            plots=[plots;circle(p(t,1),p(t,2),0.01*range,colors(a,:))];
+            plots=[plots;circle(p(t,1),p(t,2),agent_size,colors(a,:))];
             agentNum=[agentNum,text(p(t,1),p(t,2),num2str(a),'Color','black','FontSize',11)];
         else
-            plots=[plots;circle(p(end,1),p(end,2),0.01*range,colors(a,:))];
+            plots=[plots;circle(p(end,1),p(end,2),agent_size,colors(a,:))];
             agentNum=[agentNum,text(p(end,1),p(end,2),num2str(a),'Color','black','FontSize',11)];
         end
     end

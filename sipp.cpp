@@ -22,8 +22,19 @@ void SIPP::find_successors(Node curNode, const Map &map, std::list<Node> &succs,
     std::vector<Node> valid_moves = map.get_valid_moves(curNode.id);
     for(auto move : valid_moves)
     {
-		if (move.agent!=-1 && move.agent!=agent.id)
+		if (move.positive_agent!=-1 && move.positive_agent!=agent.id)// check if it only belong to one agent
 			continue;
+		
+		bool flag=false; //check if the agent is in negative list
+		for (int a:move.negtive_list){
+			if (a==agent.id){
+				flag=true;
+				break;
+			}
+		}
+		
+		if (flag) continue;
+		
         newNode.i = move.i;
         newNode.j = move.j;
         newNode.id = move.id;

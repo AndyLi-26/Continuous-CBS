@@ -41,6 +41,9 @@ public:
 	void prt_constraint(Constraint c);
 	void prt_constraints(std::list<Constraint> constraints);
 	void prt_conflict(Conflict conflict);
+	void prt_path(sPath p);
+	void prt_paths(std::vector<sPath> paths);
+	void saveCT(const string &fileName) const;
     CBS_Tree tree;
     SIPP planner;
     Solution solution;

@@ -21,5 +21,11 @@
     <edge id="e1" source="n0" target="n2">
       <data key="key1">1</data>
     </edge>
+    <edge id="e0" source="n3" target="n1">
+      <data key="key1">1</data>
+    </edge>
+    <edge id="e1" source="n2" target="n0">
+      <data key="key1">1</data>
+    </edge>
   </graph>
 </graphml>

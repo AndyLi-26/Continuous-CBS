@@ -1,4 +1,4 @@
-import sys,os
+import sys,os,shutil
 def remove_rubbish(s):
     x=s.index("<agent")
     s=s[x:]
@@ -45,8 +45,10 @@ if __name__=="__main__":
     paths=list(map(lambda x:x.strip(),all[1].split("</agent>")))[:-1]
     isExist = os.path.exists('paths')
     print(isExist)
-    if not isExist:
-        os.makedirs('paths')
+    if isExist:
+        shutil.rmtree("paths")
+    
+    os.mkdir("paths\ ")
     
     for i,info in enumerate(paths):
         parserP(i,info)

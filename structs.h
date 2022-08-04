@@ -42,7 +42,8 @@ struct Node
 {
     int     id;
     double  f, g, i, j;
-	int agent=-1;  //visible to some agent, -1 is everyone
+	int positive_agent=-1;  //visible to some agent, -1 is everyone
+	std::vector<int> negtive_list;
     Node*   parent;
     std::pair<double, double> interval;
     int interval_id;
@@ -61,7 +62,8 @@ struct Node
 				s1->id == s2->id) || (s1 && s2 &&
 				abs(s1->i - s2->i)<CN_PRECISION && 
 				abs(s1->j - s2->j)<CN_PRECISION
-				&& s1->agent == s2->agent);
+				&& s1->positive_agent == s2->positive_agent 
+				&& s1->negtive_list == s2->negtive_list);
 		}
 	};
 
@@ -71,7 +73,7 @@ struct Node
 		{
 			size_t a1 = std::hash<int>()(n->i);
 			size_t a2 = std::hash<int>()(n->j);
-			size_t a3 = std::hash<int>()(n->agent);
+			size_t a3 = std::hash<int>()(n->positive_agent);
 			return (a1 ^ (a2 << 1)*(a3 << 1));
 		}
 	};
@@ -303,13 +305,14 @@ typedef multi_index_container<
 
 class CBS_Tree
 {
-    std::list<CBS_Node> tree;
+    
     Focal_container focal;
     CT_container container;
     double focal_weight;
     int open_size;
     std::set<int> closed;
 public:
+	std::list<CBS_Node> tree;
     CBS_Tree() { open_size = 0; focal_weight = 1.0; }
     unsigned int get_size()
     {

@@ -94,18 +94,7 @@ Constraint CBS::get_wait_constraint(int agent, Move move1, Move move2)
     double db = (i1 - i2)*(i1 - i2) + (j1 - j2)*(j1 - j2);
     double ha = sqrt(da - dist*dist+CN_EPSILON);
     double size = sqrt(radius*radius - dist*dist);
-	/*
-    if(cls == 3)//behind
-    {
-        interval.first = move2.t1;
-        interval.second = move2.t1 + (size - ha);
-    }
-    else if(cls == 4)//beyond
-    {
-        interval.first = move2.t2 - size + sqrt(db - dist*dist);
-        interval.second = move2.t2;
-    }
-	*/
+	
     if(da < radius*radius)
     {
         if(db < radius*radius)
@@ -115,7 +104,6 @@ Constraint CBS::get_wait_constraint(int agent, Move move1, Move move2)
         }
         else
         {
-            //double hb = sqrt(db - dist*dist);
             interval.first = move2.t1;
             interval.second = move2.t2 - ha + size;
         }
@@ -133,6 +121,46 @@ Constraint CBS::get_wait_constraint(int agent, Move move1, Move move2)
             interval.second = move1.t1 + ha + size;
         }
     }
+	
+	/*
+	if(cls == 3)
+    {
+        interval.first = move2.t1;
+        interval.second = move2.t1 + (sqrt(radius*radius - dist*dist) - ha);
+    }
+    else if(cls == 4)
+    {
+        interval.first = move2.t2 - sqrt(radius*radius - dist*dist) + sqrt(db - dist*dist);
+        interval.second = move2.t2;
+    }
+    else if(da < radius*radius)
+    {
+        if(db < radius*radius)
+        {
+            interval.first = move2.t1;
+            interval.second = move2.t2;
+        }
+        else
+        {
+            double hb = sqrt(db - dist*dist);
+            interval.first = move2.t1;
+            interval.second = move2.t2 - hb + size;
+        }
+    }
+    else
+    {
+        if(db < radius*radius)
+        {
+            interval.first = move2.t1 + ha - size;
+            interval.second = move2.t2;
+        }
+        else
+        {
+            interval.first = move2.t1 + ha - size;
+            interval.second = move2.t1 + ha + size;
+        }
+    }
+	*/
     return Constraint(agent, interval.first, interval.second, move1.id1, move1.id2);
 }
 
@@ -277,7 +305,9 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
         parent->cardinal_conflicts.clear();
         parent->semicard_conflicts.clear();
         auto paths = get_paths(&node, task.get_agents_size());
-
+		
+	    prt_paths(paths);
+		
         auto time_now = std::chrono::high_resolution_clock::now();
         conflicts = node.conflicts;
         auto cardinal_conflicts = node.cardinal_conflicts;
@@ -299,6 +329,7 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
         else
             conflict = get_conflict(conflicts);
 		Vector2D new_ids=(-1,-1);
+		
 		prt_conflict(conflict);
 		if(config.use_edge_split)
 			new_ids=split_edge(conflict);
@@ -326,10 +357,12 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
 		constraintA = get_constraint(conflict.agent1, conflict.move1, conflict.move2);
         constraintsA.push_back(constraintA);
         constraintsA_New.push_back(constraintA);
+		
 		prt_constraint(constraintA);
 		cout<<"--after--";
 		prt_constraints(constraintsA);
 		cout<<"----"<<endl;
+		
         sPath pathA;
         //if(!config.use_cardinal || !config.cache_paths)
         {
@@ -368,6 +401,7 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
 		cout<<"----"<<endl;
 		cout<<endl;
 		cout<<flush;
+		
         sPath pathB;
         //if(!config.use_cardinal || !config.cache_paths)
         {
@@ -806,6 +840,30 @@ Vector2D CBS::split_edge(Conflict conflict){
 	}
 	
 	else if(node12 != node22 and node11 != node21){//edge conflict
+		double r(config.agent_size);
+		double i0(map->get_i(node11)),j0(map->get_j(node11));
+		double i1(map->get_i(node12)),j1(map->get_j(node12));
+		double i2(map->get_i(node21)),j2(map->get_j(node21));
+		double i3(map->get_i(node22)),j3(map->get_j(node22));
+		
+		double a0(j0-j1), b0(i1-i0), c0(i0*j1-i1*j0); //define the line
+		double a1(j2-j3), b1(i3-i2), c1(i2*j3-i3*j2);
+		double m0(-1*a0/b0),m1(-1*a1/b1);
+		
+		Vector2D P0(i0,j0),P1(i1,j1),P2(i2,j2),P3(i3,j3);
+		Vector2D temp(P1-P0);
+		Vector2D V0(temp/sqrt(temp*temp)); //define unit dir vec
+		temp= P3-P2;
+		Vector2D V1(temp/sqrt(temp*temp));
+		
+		Vector2D Q((b0*c1-b1*c0)/(a0*b1-a1*b0) , (c0*a1-c1*a0)/(a0*b1-a1*b0)); //define intersection point and angle
+		double theta(atan(abs((m1-m0)/(1+m0*m1))));
+		
+		double d(2*r/sin(theta));//define waiting point
+		Vector2D new_node1(Q-V0*d);
+		Vector2D new_node2(Q-V1*d);
+		
+	    /*
 		double startTimeA(conflict.move1.t1), endTimeA(conflict.move1.t2), startTimeB(conflict.move2.t1), endTimeB(conflict.move2.t2);
 		double m1i1(map->get_i(conflict.move1.id1)), m1i2(map->get_i(conflict.move1.id2)), m1j1(map->get_j(conflict.move1.id1)), m1j2(map->get_j(conflict.move1.id2));
 		double m2i1(map->get_i(conflict.move2.id1)), m2i2(map->get_i(conflict.move2.id2)), m2j1(map->get_j(conflict.move2.id1)), m2j2(map->get_j(conflict.move2.id2));
@@ -825,7 +883,7 @@ Vector2D CBS::split_edge(Conflict conflict){
 		}
 		double r(2*config.agent_size);
 		Vector2D w(B - A);
-		double c(w*w - r*r);  //doubting, maybe bug here
+		double c(w*w - r*r);  
 		Vector2D v(VA - VB);
 		double a(v*v);
 		double b(w*v);
@@ -834,11 +892,15 @@ Vector2D CBS::split_edge(Conflict conflict){
 		double norm_coef1=sqrt(VA*VA);
 		double norm_coef2=sqrt(VB*VB);
 		//Vector2D delta(CN_RESOLUTION,CN_RESOLUTION);
-		Vector2D new_node1=A+VA*(ctime-(2*config.agent_size+CN_RESOLUTION)/norm_coef1);
-		Vector2D new_node2=B+VB*(ctime-(2*config.agent_size+CN_RESOLUTION)/norm_coef2);
+		//Vector2D new_node1=A+VA*(ctime-(2*config.agent_size+CN_RESOLUTION)/norm_coef1);
+		//Vector2D new_node2=B+VB*(ctime-(2*config.agent_size+CN_RESOLUTION)/norm_coef2);
+		Vector2D new_node1=A+VA*(ctime-(CN_RESOLUTION)/norm_coef1);
+		Vector2D new_node2=B+VB*(ctime-(CN_RESOLUTION)/norm_coef2);
+		*/
+		
 		cout<<"edge:";
 		int new_id;
-		Vector2D A_dis,temp;
+		//Vector2D A_dis,temp;
 		if (node11!=node12){
 			//A_dis=Vector2D(new_node1.i),new_node1.j));
 			//temp=Vector2D(map->get_i(node11),map->get_j(node11));
@@ -869,7 +931,7 @@ Vector2D CBS::split_edge(Conflict conflict){
 	else
 		assert(false);
 	
-	//cout<<endl;
+	cout<<endl;
 	return new_nodes;
 }
 
@@ -901,6 +963,22 @@ void CBS::prt_constraints(std::list<Constraint> constraints){
 		prt_constraint(c);
 }
 
+void CBS::prt_path(sPath p){
+	cout<<p.agentID<<":";
+	for (sNode n:p.nodes){
+		cout<<"("<<n.id<<","<<n.g<<")->";
+	}
+	cout<<endl;
+}
+
+void CBS::prt_paths(std::vector<sPath> paths){
+	for(sPath p:paths){
+		prt_path(p);
+		//cout<<"--"<<endl;
+	}
+}
+
+
 Constraint CBS::get_split_constraint(int agent, Move move1, Move move2){
 	/*
 	if(move2.t2 == CN_INFINITY) // no idea what's happening here
@@ -925,9 +1003,42 @@ void CBS::prt_conflict(Conflict conflict){
 	int node22=conflict.move2.id2;
 	cout<<"------------------"<<endl;
 	cout<<"conflict: [id] (coord1->coord2) @[t]"<<endl;
-	cout<<"["<<node11<<"->"<<node12<<"] ("<<map->get_i(node11)<<","<<map->get_j(node11)<<") -> ("
+	cout<<"[a"<<conflict.agent1<<":"<<node11<<"->"<<node12<<"] ("<<map->get_i(node11)<<","<<map->get_j(node11)<<") -> ("
 	<<map->get_i(node12)<<","<<map->get_j(node12)<<") @["<<conflict.move1.t1<<"~"<<conflict.move1.t2<<"]"<<endl;
-	cout<<"["<<node21<<"->"<<node22<<"] ("<<map->get_i(node21)<<","<<map->get_j(node21)<<") -> ("
+	cout<<"[a"<<conflict.agent2<<":"<<node21<<"->"<<node22<<"] ("<<map->get_i(node21)<<","<<map->get_j(node21)<<") -> ("
 	<<map->get_i(node22)<<","<<map->get_j(node22)<<") @["<<conflict.move2.t1<<"~"<<conflict.move2.t2<<"]"<<endl<<endl;
 //"[move1_t:"<<conflict.move1.t1<<"~"<<conflict.move1.t2<<"] [move2_t:"<<conflict.move2.t1<<"~"<<conflict.move2.t2<<"]"<<endl;
+}
+
+void CBS::saveCT(const string &fileName) const{ // write the CT to a file
+/*
+	std::ofstream output;
+	output.open(fileName, std::ios::out);
+	output << "digraph G {" << endl;
+	output << "size = \"5,5\";" << endl;
+	output << "center = true;" << endl;
+	for (auto node : tree.tree)
+	{
+		output << node.id << " [label=\"#" << node.id 
+					<< "\ng+h="<< node.cost << "+" << node.h 
+					<< "\nd=" << node.cost+node.h << "\"]" << endl;
+		if (node.parent==nullptr)
+			continue;
+		output << node.parent->id << " . " << node.id << " [label=\"";
+		for (const auto &constraint : node.constraint)
+			output << constraint;
+		output << "\nAgents ";
+        for (const auto &path : node.paths)
+            output << path.first << "(+" << path.second.size() - paths_found_initially[path.first].size() << ") ";
+        output << "\"]" << endl;
+	}
+	auto node = goal_node;
+	while (node != nullptr)
+	{
+		output << node.id << " [color=red]" << endl;
+		node = node.parent;
+	}
+	output << "}" << endl;
+	output.close();
+	*/
 }
