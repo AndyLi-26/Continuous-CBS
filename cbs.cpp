@@ -340,19 +340,19 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
 
         std::list<Constraint> constraintsA = get_constraints(&node, conflict.agent1);
         std::list<Constraint> constraintsA_New;
-		Constraint constraintA,temp;
+		Constraint constraintA,tempA;
 		prt_constraints(constraintsA);
 		cout<<"+"<<endl;
-		if (config.use_edge_split and new_ids.i!=-1){
+		if (config.use_edge_split && new_ids.i!=-1){
 			cout<<"move1: ";
 			prt_move(conflict.move1);
 			Move temp_move=modify_move(conflict.move1,new_ids.i);
 			cout<<"new_m: ";
 			prt_move(temp_move);
-			temp = get_constraint(conflict.agent1, temp_move, conflict.move2);
-			constraintsA.push_back(temp);
-			constraintsA_New.push_back(temp);
-			prt_constraint(temp);
+			tempA = get_constraint(conflict.agent1, temp_move, conflict.move2);
+			constraintsA.push_back(tempA);
+			constraintsA_New.push_back(tempA);
+			prt_constraint(tempA);
 		}
 		constraintA = get_constraint(conflict.agent1, conflict.move1, conflict.move2);
         constraintsA.push_back(constraintA);
@@ -376,19 +376,19 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
         std::list<Constraint> constraintsB = get_constraints(&node, conflict.agent2);
         std::list<Constraint> constraintsB_New;
 		
-		Constraint constraintB;
+		Constraint constraintB,tempB;
 		prt_constraints(constraintsB);
 		cout<<"+"<<endl;
-		if (config.use_edge_split and new_ids.j!=-1){
+		if (config.use_edge_split && new_ids.j!=-1){
 			cout<<"move2: ";
 			prt_move(conflict.move2);
 			Move temp_move=modify_move(conflict.move2,new_ids.j);
 			cout<<"new_m: ";
 			prt_move(temp_move);
-			temp= get_constraint(conflict.agent2, temp_move, conflict.move1);
-			constraintsB.push_back(temp);
-			constraintsB_New.push_back(temp);
-			prt_constraint(temp);
+			tempB= get_constraint(conflict.agent2, temp_move, conflict.move1);
+			constraintsB.push_back(tempB);
+			constraintsB_New.push_back(tempB);
+			prt_constraint(tempB);
 		}
 		
 		constraintB = get_constraint(conflict.agent2, conflict.move2, conflict.move1);
@@ -425,9 +425,21 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
             for(auto c: constraintsB)
                 if(c.positive)
                     agent2positives++;
+				
+			Constraint cons2changeA,cons2changeB;
+			if (config.use_edge_split && new_ids.i!=-1)
+				cons2changeA=tempA;
+			else
+				cons2changeA=constraintA;
+			
+			if (config.use_edge_split && new_ids.j!=-1)
+				cons2changeB=tempB;
+			else
+				cons2changeB=constraintB;
+			
             if(conflict.move1.id1 != conflict.move1.id2 && agent2positives > agent1positives && pathA.cost > 0)
             {
-                positive = Constraint(conflict.agent1, constraintA.t1, constraintA.t2, conflict.move1.id1, conflict.move1.id2, true);
+                positive = Constraint(conflict.agent1, cons2changeA.t1, cons2changeA.t2, conflict.move1.id1, conflict.move1.id2, true);
                 if(check_positive_constraints(constraintsA, positive))
                 {
                     left.positive_constraint = positive;
@@ -441,7 +453,7 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
             }
             if(conflict.move2.id1 != conflict.move2.id2 && !inserted && pathB.cost > 0)
             {
-                positive = Constraint(conflict.agent2, constraintB.t1, constraintB.t2, conflict.move2.id1, conflict.move2.id2, true);
+                positive = Constraint(conflict.agent2, cons2changeB.t1, cons2changeB.t2, conflict.move2.id1, conflict.move2.id2, true);
                 if(check_positive_constraints(constraintsB, positive))
                 {
                     right.positive_constraint = positive;
@@ -454,7 +466,7 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
             }
             if(conflict.move1.id1 != conflict.move1.id2 && !inserted && pathA.cost > 0)
             {
-                positive = Constraint(conflict.agent1, constraintA.t1, constraintA.t2, conflict.move1.id1, conflict.move1.id2, true);
+                positive = Constraint(conflict.agent1, cons2changeA.t1, cons2changeA.t2, conflict.move1.id1, conflict.move1.id2, true);
                 if(check_positive_constraints(constraintsA, positive))
                 {
                     inserted = true;
