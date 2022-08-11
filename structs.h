@@ -27,23 +27,12 @@ struct Agent
         :start_id(s_id), goal_id(g_id), id(_id) {}
 };
 
-struct gNode
-{
-    double i;
-    double j;
-	int agent; //visible to some agent, -1 is everyone
-    std::vector<int> neighbors;
-    gNode(double i_ = -1, double j_ = -1, int a_=-1):i(i_), j(j_),agent(a_) {}
-	
-    ~gNode() { neighbors.clear(); }
-};
-
 struct Node
 {
     int     id;
     double  f, g, i, j;
-	int positive_agent=-1;  //visible to some agent, -1 is everyone
-	std::vector<int> negtive_list;
+	//int positive_agent=-1;  //visible to some agent, -1 is everyone
+	//std::vector<int> negtive_list;
     Node*   parent;
     std::pair<double, double> interval;
     int interval_id;
@@ -61,9 +50,7 @@ struct Node
 			return (s1 == s2) || (s1 && s2 &&
 				s1->id == s2->id) || (s1 && s2 &&
 				abs(s1->i - s2->i)<CN_PRECISION && 
-				abs(s1->j - s2->j)<CN_PRECISION
-				&& s1->positive_agent == s2->positive_agent 
-				&& s1->negtive_list == s2->negtive_list);
+				abs(s1->j - s2->j)<CN_PRECISION);
 		}
 	};
 
@@ -73,10 +60,30 @@ struct Node
 		{
 			size_t a1 = std::hash<int>()(n->i);
 			size_t a2 = std::hash<int>()(n->j);
-			size_t a3 = std::hash<int>()(n->positive_agent);
-			return (a1 ^ (a2 << 1)*(a3 << 1));
+			return (a1 ^ (a2 << 1));
 		}
 	};
+};
+
+struct gNode
+{
+    double i;
+    double j;
+	//int agent; //visible to some agent, -1 is everyone
+    std::vector<int> neighbors;
+    gNode(double i_ = -1, double j_ = -1):i(i_), j(j_){}
+	
+	struct eqnode 
+	{
+		bool operator()(const gNode* s1, const gNode* s2) const 
+		{
+
+			return (s1 == s2) || (
+			s1->i==s2->i && s1->j==s2->j &&
+			s1-> neighbors == s2->neighbors);
+		}
+	};
+    ~gNode() { neighbors.clear();}
 };
 
 struct Position
@@ -193,12 +200,19 @@ struct Conflict
         return this->overcost < other.overcost;
     }
 };
+struct Map_delta{
+	int add_node;
+	std::pair<int,int> del_edge;
+	
+	Map_delta(int _add_node = -1, std::pair<int,int> _del_edge=std::make_pair(-1,-1))
+		: add_node(_add_node), del_edge(_del_edge) {}
+};
 
 struct CBS_Node
 {
     std::vector<sPath> paths;
     CBS_Node* parent;
-    std::list<Constraint> constraint;
+    Constraint constraint;
     Constraint positive_constraint;
     int id;
     std::string id_str;
@@ -207,10 +221,11 @@ struct CBS_Node
     unsigned int conflicts_num;
     unsigned int total_cons;
     unsigned int low_level_expanded;
+	Map_delta delta;
     std::list<Conflict> conflicts;
     std::list<Conflict> semicard_conflicts;
     std::list<Conflict> cardinal_conflicts;
-    CBS_Node(std::vector<sPath> _paths = {}, CBS_Node* _parent = nullptr, std::list<Constraint> _constraint = std::list<Constraint>(0), double _cost = 0, int _conflicts_num = 0, int total_cons_ = 0)
+    CBS_Node(std::vector<sPath> _paths = {}, CBS_Node* _parent = nullptr, Constraint _constraint = Constraint(),Map_delta _delta=Map_delta(), double _cost = 0, int _conflicts_num = 0, int total_cons_ = 0)
         :paths(_paths), parent(_parent), constraint(_constraint), cost(_cost), conflicts_num(_conflicts_num), total_cons(total_cons_)
     {
         low_level_expanded = 0;

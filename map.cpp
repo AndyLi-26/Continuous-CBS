@@ -1,4 +1,47 @@
 #include "map.h"
+Map::Map(Map *m) {
+	grid=m->grid;
+	nodes=m->nodes;
+	height=m->height;
+	width=m->width;
+	size=m->size;
+	init_node_num=m->init_node_num;
+	for (int i=0;i<m->valid_moves.size();++i){
+		std::vector<Node> neighbors;
+		for (int j=0;j<m->valid_moves[i].size();++j){
+			Node new_node;
+			new_node.id=m->valid_moves[i][j].id;
+			new_node.i=m->valid_moves[i][j].i;
+			new_node.j=m->valid_moves[i][j].j;
+			neighbors.push_back(new_node);
+		}
+		valid_moves.push_back(neighbors);
+	}
+	
+	for (gNode original:m->nodes){
+		gNode temp;
+		temp.i=original.i;
+		temp.j=original.j;
+		nodes.push_back(temp);
+	}
+	
+}
+
+bool Map::equal(Map *m){
+	if (grid!=m->grid || height!=m->height || width!=m->width ||
+	size!=m->size || init_node_num!=m->init_node_num)
+		return false;
+		
+	for (int i=0;i<m->valid_moves.size();++i){
+		for (int j=0;j<m->valid_moves[i].size();++j){
+			if (valid_moves[i][j].id!=m->valid_moves[i][j].id ||
+			valid_moves[i][j].i!=m->valid_moves[i][j].i ||
+			valid_moves[i][j].j!=m->valid_moves[i][j].j )
+				return false;
+		}
+	}
+	return true;
+}
 
 bool Map::get_map(const char* FileName)
 {
@@ -260,6 +303,8 @@ bool Map::get_roadmap(const char *FileName)
     }
 	//prt_nodes();
 	nodes_num=nodes.size();
+	init_node_num=nodes_num;
+	
     for(element = root->FirstChildElement("edge"); element; element = element->NextSiblingElement("edge"))
     {
         std::string source = std::string(element->Attribute("source"));
@@ -308,12 +353,12 @@ int Map::add_node(double i, double j, int node1, int node2,int agent)
 	if (it != nodes_table.end())
 	{
 		//Node existing_node = (*it);
-		return nodes_table[ind];
+		return -1;
 	}
 	//std::cout<<"inserted"<<std::endl;
 	//add nodes to node list
 	int nodeid=nodes.size();
-	gNode tempnode(i,j,agent);
+	gNode tempnode(i,j);
     nodes.push_back(tempnode);
 	nodes[nodeid].neighbors.push_back(node1);
 	nodes[nodeid].neighbors.push_back(node2);
@@ -327,10 +372,10 @@ int Map::add_node(double i, double j, int node1, int node2,int agent)
 	Node node;
 	node.i=i;
 	node.j=j;
-	node.positive_agent=agent;
 	node.id=nodeid;
 	
 	//break up the original edge
+	/*
 	for (int n=0;n<valid_moves[node1].size();++n){
 		if (valid_moves[node1][n].id==node2){
 			valid_moves[node1][n].negtive_list.push_back(agent);
@@ -343,6 +388,14 @@ int Map::add_node(double i, double j, int node1, int node2,int agent)
 		}
 	}
 	
+	
+	for (int n=0;n<valid_moves[node2].size();++n){
+		if (valid_moves[node2][n].id==node1){
+			valid_moves[node2].erase(valid_moves[node2].begin()+n);
+			break;
+		}
+	}
+	*/
 	valid_moves[node1].push_back(node);
 	valid_moves[node2].push_back(node);
 	std::vector<Node> neighbors;
@@ -357,8 +410,6 @@ int Map::add_node(double i, double j, int node1, int node2,int agent)
     valid2.id = node2;
     neighbors.push_back(valid2);
 	valid_moves.push_back(neighbors);
-
-
 	
 	return nodeid;
 }
@@ -508,5 +559,52 @@ void Map::prt_nodes(){
 	for(auto it=nodes_table.begin(); it!=nodes_table.end(); ++it){
 		std::cout<<"id:"<<it->second;
 		prt_ind(it->first);
+	}
+}
+
+
+void Map::alter(Map_delta map_delta){
+	int node_id(map_delta.add_node);
+	int v1(map_delta.del_edge.first),v2(map_delta.del_edge.second);
+	
+	for (int i=0;i<valid_moves[v1].size();++i){
+		if (valid_moves[v1][i].id==v2){
+			valid_moves[v1][i].i=get_i(node_id);
+			valid_moves[v1][i].j=get_j(node_id);
+			valid_moves[v1][i].id=node_id;
+			break;
+		}
+	}
+	
+	for (int i=0;i<valid_moves[v2].size();++i){
+		if (valid_moves[v2][i].id==v1){
+			valid_moves[v2][i].i=get_i(node_id);
+			valid_moves[v2][i].j=get_j(node_id);
+			valid_moves[v2][i].id=node_id;
+			break;
+		}
+	}
+}
+
+void Map::alter_back(Map_delta map_delta){
+	int node_id(map_delta.add_node);
+	int v1(map_delta.del_edge.first),v2(map_delta.del_edge.second);
+	
+	for (int i=0;i<valid_moves[v1].size();++i){
+		if (valid_moves[v1][i].id==node_id){
+			valid_moves[v1][i].i=get_i(v2);
+			valid_moves[v1][i].j=get_j(v2);
+			valid_moves[v1][i].id=v2;
+			break;
+		}
+	}
+	
+	for (int i=0;i<valid_moves[v2].size();++i){
+		if (valid_moves[v2][i].id==node_id){
+			valid_moves[v2][i].i=get_i(v1);
+			valid_moves[v2][i].j=get_j(v1);
+			valid_moves[v2][i].id=v1;
+			break;
+		}
 	}
 }

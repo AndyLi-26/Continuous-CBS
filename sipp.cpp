@@ -20,8 +20,10 @@ void SIPP::find_successors(Node curNode, const Map &map, std::list<Node> &succs,
 {
     Node newNode;
     std::vector<Node> valid_moves = map.get_valid_moves(curNode.id);
-    for(auto move : valid_moves)
+    for(int i=0;i<valid_moves.size();++i)
     {
+		Node move = valid_moves[i];
+		/*
 		if (move.positive_agent!=-1 && move.positive_agent!=agent.id)// check if it only belong to one agent
 			continue;
 		
@@ -34,7 +36,7 @@ void SIPP::find_successors(Node curNode, const Map &map, std::list<Node> &succs,
 		}
 		
 		if (flag) continue;
-		
+		*/
         newNode.i = move.i;
         newNode.j = move.j;
         newNode.id = move.id;
@@ -56,7 +58,8 @@ void SIPP::find_successors(Node curNode, const Map &map, std::list<Node> &succs,
         }
         else
             intervals.push_back({0, CN_INFINITY});
-        auto cons_it = constraints.find({curNode.id, newNode.id});
+		//int to_index=map.valid_moves
+        auto cons_it = constraints.find({curNode.id,i});
         int id(0);
         for(auto interval: intervals)
         {

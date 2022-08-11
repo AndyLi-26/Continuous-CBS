@@ -38,7 +38,6 @@ void Heuristic::count(const Map &map, Agent agent)
             }
         }
     }
-
 }
 
 void Heuristic::add_node(int node_id, unsigned int agent,int next_node)

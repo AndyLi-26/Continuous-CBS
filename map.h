@@ -26,6 +26,7 @@ private:
     bool get_grid(const char* FileName);
     bool get_roadmap(const char* FileName);
 	int nodes_num; //public node limit
+	int init_node_num;
 	void prt_nodes();
 	typedef std::pair<std::pair<double,double>,int> node_index;
 	typedef boost::unordered_map<node_index,int> hast_table;
@@ -33,6 +34,7 @@ private:
 	
 public:
     Map(double size, int k){ agent_size = size; connectedness = k; }
+	Map(Map *m);
     ~Map(){}
     int  get_size() const { return size; }
     bool get_map(const char* FileName);
@@ -49,6 +51,9 @@ public:
     void print_map();
     void printPPM();
 	void prt_ind(node_index n);
+	void alter(Map_delta map_delta);
+	void alter_back(Map_delta map_delta);
+	bool equal(Map *m);
 };
 
 #endif // MAP_H
