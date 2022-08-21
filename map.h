@@ -37,6 +37,7 @@ public:
 	Map(Map *m);
     ~Map(){}
     int  get_size() const { return size; }
+	int get_new_node_num() const {return size-init_node_num;}
     bool get_map(const char* FileName);
     bool is_roadmap() const {return map_is_roadmap;}
     bool cell_is_obstacle(int i, int j) const;

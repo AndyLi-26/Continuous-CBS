@@ -36,7 +36,8 @@ int main(int argc, const char *argv[])
         std::cout<< "Soulution found: " << found <<"\nUse Edge Splitting: "<< Use_edge <<
 		"\nRuntime: "<<solution.time.count() << "\nMakespan: " << solution.makespan << "\nFlowtime: " << solution.flowtime<< "\nInitial Cost: "<<solution.init_cost<< "\nCollision Checking Time: " << solution.check_time
              << "\nHL expanded: " << solution.high_level_expanded << "\nLL searches: " << solution.low_level_expansions << "\nLL expanded(avg): " << solution.low_level_expanded << std::endl;
-
+		std::cout<<"agent_size: "<<config.agent_size<<std::endl;
+		std::cout<<"introduce new node: "<<map.get_new_node_num()<<std::endl;
         logger.get_log(argv[2]);
         logger.write_to_log_summary(solution);
 		logger.txt_writer(solution,config);
