@@ -51,6 +51,7 @@ public:
     void print_map();
     void printPPM();
 	void prt_ind(node_index n);
+	void prt_validmoves();
 	void alter(Map_delta map_delta);
 	void alter_back(Map_delta map_delta);
 	bool equal(Map *m);

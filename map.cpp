@@ -29,7 +29,7 @@ Map::Map(Map *m) {
 
 bool Map::equal(Map *m){
 	if (grid!=m->grid || height!=m->height || width!=m->width ||
-	size!=m->size || init_node_num!=m->init_node_num)
+	init_node_num!=m->init_node_num || init_node_num!=m->init_node_num)
 		return false;
 		
 	for (int i=0;i<m->valid_moves.size();++i){
@@ -360,6 +360,7 @@ int Map::add_node(double i, double j, int node1, int node2,int agent)
 	int nodeid=nodes.size();
 	gNode tempnode(i,j);
     nodes.push_back(tempnode);
+	this->size+=1;
 	nodes[nodeid].neighbors.push_back(node1);
 	nodes[nodeid].neighbors.push_back(node2);
 	nodes[node1].neighbors.push_back(nodeid);
@@ -396,8 +397,8 @@ int Map::add_node(double i, double j, int node1, int node2,int agent)
 		}
 	}
 	*/
-	valid_moves[node1].push_back(node);
-	valid_moves[node2].push_back(node);
+	//valid_moves[node1].push_back(node);
+	//valid_moves[node2].push_back(node);
 	std::vector<Node> neighbors;
 	Node valid1;
 	valid1.i = nodes[node1].i;
@@ -561,10 +562,25 @@ void Map::prt_nodes(){
 		prt_ind(it->first);
 	}
 }
-
+void Map::prt_validmoves(){
+	//std::cout<<"Map:"<<std::endl;
+	for (int i=0;i<valid_moves.size();++i){
+		auto vecNode=valid_moves[i];
+		std::cout<<"|"<<i<<": ";
+		for (Node n:vecNode){
+			std::cout<<n.id<<", ";
+		}
+		std::cout<<std::endl;
+	}
+	std::cout<<"&&&&&&&"<<std::endl<<std::endl;
+}
 
 void Map::alter(Map_delta map_delta){
 	int node_id(map_delta.add_node);
+	
+	if (node_id==-1)
+		return;
+	
 	int v1(map_delta.del_edge.first),v2(map_delta.del_edge.second);
 	
 	for (int i=0;i<valid_moves[v1].size();++i){
@@ -588,6 +604,10 @@ void Map::alter(Map_delta map_delta){
 
 void Map::alter_back(Map_delta map_delta){
 	int node_id(map_delta.add_node);
+	
+	if (node_id==-1)
+		return;
+	
 	int v1(map_delta.del_edge.first),v2(map_delta.del_edge.second);
 	
 	for (int i=0;i<valid_moves[v1].size();++i){
@@ -595,7 +615,6 @@ void Map::alter_back(Map_delta map_delta){
 			valid_moves[v1][i].i=get_i(v2);
 			valid_moves[v1][i].j=get_j(v2);
 			valid_moves[v1][i].id=v2;
-			break;
 		}
 	}
 	
@@ -604,7 +623,6 @@ void Map::alter_back(Map_delta map_delta){
 			valid_moves[v2][i].i=get_i(v1);
 			valid_moves[v2][i].j=get_j(v1);
 			valid_moves[v2][i].id=v1;
-			break;
 		}
 	}
 }

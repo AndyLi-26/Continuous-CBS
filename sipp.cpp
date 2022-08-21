@@ -23,20 +23,6 @@ void SIPP::find_successors(Node curNode, const Map &map, std::list<Node> &succs,
     for(int i=0;i<valid_moves.size();++i)
     {
 		Node move = valid_moves[i];
-		/*
-		if (move.positive_agent!=-1 && move.positive_agent!=agent.id)// check if it only belong to one agent
-			continue;
-		
-		bool flag=false; //check if the agent is in negative list
-		for (int a:move.negtive_list){
-			if (a==agent.id){
-				flag=true;
-				break;
-			}
-		}
-		
-		if (flag) continue;
-		*/
         newNode.i = move.i;
         newNode.j = move.j;
         newNode.id = move.id;
@@ -60,9 +46,10 @@ void SIPP::find_successors(Node curNode, const Map &map, std::list<Node> &succs,
             intervals.push_back({0, CN_INFINITY});
 		//int to_index=map.valid_moves
         auto cons_it = constraints.find({curNode.id,i});
-        int id(0);
+        int id(0);			
         for(auto interval: intervals)
         {
+			
             newNode.interval_id = id;
             id++;
             auto it = visited.find(newNode.id + newNode.interval_id * map.get_size());
@@ -162,6 +149,7 @@ std::vector<Node> SIPP::reconstruct_path(Node curNode)
 
 void SIPP::add_collision_interval(int id, std::pair<double, double> interval)
 {
+
     std::vector<std::pair<double, double>> intervals(0);
     if(collision_intervals.count(id) == 0)
         collision_intervals.insert({id, {interval}});
@@ -238,7 +226,8 @@ void SIPP::make_constraints(std::list<Constraint> &cons)
     {
         if(con.positive == false)
         {
-            if(con.id1 == con.id2) // wait consatraint
+			
+            if(con.id2 == -1) // wait consatraint
                 add_collision_interval(con.id1, std::make_pair(con.t1, con.t2));
             else
                 add_move_constraint(Move(con));
@@ -286,8 +275,9 @@ std::vector<Path> SIPP::find_partial_path(std::vector<Node> starts, std::vector<
     {
         curNode = find_min();
         auto v = visited.find(curNode.id + curNode.interval_id * map.get_size());
-        if(v->second.second)
+        if(v->second.second){
             continue;
+		}
         v->second.second = true;
         auto parent = &close.insert({curNode.id + curNode.interval_id * map.get_size(), curNode}).first->second;
         if(curNode.id == goals[0].id)

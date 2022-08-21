@@ -3,21 +3,18 @@
     <agent start_id="0" goal_id="3"/>
     <agent start_id="2" goal_id="1"/>
     <log>
-        <summary time="0.014239399999999999" flowtime="262.72792211095509" makespan="150"/>
+        <summary time="0.032457600000000003" flowtime="5.7242641079002219" makespan="3"/>
         <agent number="0">
-            <path duration="150">
-                <section number="0" start_i="100" start_j="100" goal_i="100" goal_j="150" duration="50"/>
-                <section number="1" start_i="100" start_j="150" goal_i="100" goal_j="175" duration="25"/>
-                <section number="2" start_i="100" start_j="175" goal_i="100" goal_j="200" duration="25"/>
-                <section number="3" start_i="100" start_j="200" goal_i="100" goal_j="250" duration="50"/>
+            <path duration="3">
+                <section number="0" start_i="0.5" start_j="0.5" goal_i="0.5" goal_j="2.5" duration="2"/>
+                <section number="1" start_i="0.5" start_j="2.5" goal_i="0.5" goal_j="3.5" duration="1"/>
             </path>
         </agent>
         <agent number="1">
-            <path duration="112.72792211095506">
-                <section number="0" start_i="150" start_j="200" goal_i="125" goal_j="200" duration="25"/>
-                <section number="1" start_i="125" start_j="200" goal_i="112.5" goal_j="200" duration="12.5"/>
-                <section number="2" start_i="112.5" start_j="200" goal_i="112.5" goal_j="200" duration="62.727922110955063"/>
-                <section number="3" start_i="112.5" start_j="200" goal_i="100" goal_j="200" duration="12.5"/>
+            <path duration="2.724264107900221">
+                <section number="0" start_i="1.5" start_j="2.5" goal_i="1" goal_j="2.5" duration="0.5"/>
+                <section number="1" start_i="1" start_j="2.5" goal_i="1" goal_j="2.5" duration="1.724264107900221"/>
+                <section number="2" start_i="1" start_j="2.5" goal_i="0.5" goal_j="2.5" duration="0.5"/>
             </path>
         </agent>
     </log>

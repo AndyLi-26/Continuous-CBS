@@ -134,6 +134,14 @@ struct sPath
             nodes.push_back(sNode(n));
         return *this;
     }
+	friend std::ostream& operator << (std::ostream& os, const sPath p){
+		os<<p.agentID<<":";
+		for (sNode n:p.nodes){
+			os<<"("<<n.id<<","<<n.g<<")->";
+		}
+		os<<"\n";
+		return os;
+	}
 };
 
 struct Constraint
@@ -142,12 +150,20 @@ struct Constraint
     double t1, t2; // prohibited to start moving from (i1, j1) to (i2, j2) during interval (t1, t2)
     //double i1, j1, i2, j2; // in case of node constraint i1==i2, j1==j2.
     int id1, id2;
+	int to_id;
     bool positive;
-    Constraint(int _agent = -1, double _t1 = -1, double _t2 = -1, int _id1 = -1, int _id2 = -1, bool _positive = false)
-        : agent(_agent), t1(_t1), t2(_t2), id1(_id1), id2(_id2), positive(_positive) {}
+    Constraint(int _agent = -1, double _t1 = -1, double _t2 = -1, int _id1 = -1, int _id2 = -1,int _to_id=-3, bool _positive = false)
+        : agent(_agent), t1(_t1), t2(_t2), id1(_id1), id2(_id2),to_id(_to_id),positive(_positive) {}
     friend std::ostream& operator <<(std::ostream& os, const Constraint& con)
     {
-        os<<con.agent<<" "<<con.t1<<" "<<con.t2<<" \n";//<<con.i1<<" "<<con.j1<<" "<<con.i2<<" "<<con.j2<<"\n";
+		if(con.agent==-1){
+			os<<"";
+			return os;
+		}
+		if (con.positive){
+			os<<"+";
+		}
+        os<<"a:" <<con.agent <<"["<< con.id1<<"->"<<con.to_id<<"]"<<"("<<con.t1<<"~"<<con.t2<<")\n";//<<con.i1<<" "<<con.j1<<" "<<con.i2<<" "<<con.j2<<"\n";
         return os;
     }
     bool operator <(const Constraint& other) const
@@ -199,6 +215,15 @@ struct Conflict
     {
         return this->overcost < other.overcost;
     }
+	friend std::ostream& operator <<(std::ostream& os, const Conflict conflict){
+		int node11=conflict.move1.id1;
+		int node12=conflict.move1.id2;
+		int node21=conflict.move2.id1;
+		int node22=conflict.move2.id2;
+		os<<"[a"<<conflict.agent1<<":"<<node11<<"->"<<node12<<"]@["<<conflict.move1.t1<<"~"<<conflict.move1.t2<<"]\n";
+		os<<"[a"<<conflict.agent2<<":"<<node21<<"->"<<node22<<"]@["<<conflict.move2.t1<<"~"<<conflict.move2.t2<<"]\n";
+		return os;
+	}
 };
 struct Map_delta{
 	int add_node;
@@ -222,11 +247,12 @@ struct CBS_Node
     unsigned int total_cons;
     unsigned int low_level_expanded;
 	Map_delta delta;
+	Conflict cur_conflict;
     std::list<Conflict> conflicts;
     std::list<Conflict> semicard_conflicts;
     std::list<Conflict> cardinal_conflicts;
     CBS_Node(std::vector<sPath> _paths = {}, CBS_Node* _parent = nullptr, Constraint _constraint = Constraint(),Map_delta _delta=Map_delta(), double _cost = 0, int _conflicts_num = 0, int total_cons_ = 0)
-        :paths(_paths), parent(_parent), constraint(_constraint), cost(_cost), conflicts_num(_conflicts_num), total_cons(total_cons_)
+        :paths(_paths), parent(_parent), constraint(_constraint), delta(_delta), cost(_cost), conflicts_num(_conflicts_num), total_cons(total_cons_)
     {
         low_level_expanded = 0;
         h = 0;
