@@ -28,16 +28,25 @@ Map::Map(Map *m) {
 }
 
 bool Map::equal(Map *m){
-	if (grid!=m->grid || height!=m->height || width!=m->width ||
-	init_node_num!=m->init_node_num || init_node_num!=m->init_node_num)
+	if (grid!=m->grid)
 		return false;
-		
+	if (height!=m->height)
+		return false;
+	if (width!=m->width)
+		return false;
+	if (init_node_num!=m->init_node_num)
+		return false;
 	for (int i=0;i<m->valid_moves.size();++i){
 		for (int j=0;j<m->valid_moves[i].size();++j){
 			if (valid_moves[i][j].id!=m->valid_moves[i][j].id ||
 			valid_moves[i][j].i!=m->valid_moves[i][j].i ||
-			valid_moves[i][j].j!=m->valid_moves[i][j].j )
+			valid_moves[i][j].j!=m->valid_moves[i][j].j ){
+				std::cout<<"this:"<<std::endl;
+				prt_validmoves();
+				std::cout<<"ori"<<std::endl;
+				m->prt_validmoves();
 				return false;
+			}
 		}
 	}
 	return true;
@@ -296,9 +305,10 @@ bool Map::get_roadmap(const char *FileName)
         stream >> j;
 		j=fit2grid(j);
         gNode node(i,j);
+		node.agent.insert(-1);
         nodes.push_back(node);
 		//nodes_table.insert(n);
-		node_index ind(std::make_pair(i,j),-1);
+		node_index ind(std::make_pair(i,j));
 		nodes_table[ind]=nodes.size()-1;
     }
 	//prt_nodes();
@@ -342,38 +352,88 @@ bool Map::get_roadmap(const char *FileName)
 
 int Map::add_node(double i, double j, int node1, int node2,int agent)
 {
+	//std::cout<<"new agent:"<<agent<<std::endl;
 	hast_table::iterator it;
-	node_index ind(std::make_pair(i,j),agent);
+	node_index ind(std::make_pair(i,j));
 	//check if exist
 	it = nodes_table.find(ind);
 	//std::cout<<std::endl<<std::endl<<"info"<<std::endl;
 	//prt_ind(ind);
 	//std::cout<<"("<<ind.first.first<<","<<ind.first.second<<") a:"<<ind.second<<std::endl;
 	//prt_nodes();
+	int node_id;
+	if (get_new_node_num()>10)
+		return -1;
 	if (it != nodes_table.end())
 	{
-		//Node existing_node = (*it);
-		return -1;
+		node_id=it->second;
+		if (nodes[node_id].agent.find(-1)!=nodes[node_id].agent.end() || nodes[node_id].agent.find(agent)!=nodes[node_id].agent.end())
+			return -1;
+		else{
+			nodes[node_id].agent.insert(agent);
+			
+			bool n1=false,n2=false;
+			for (Node n:valid_moves[node_id]){
+				if(n1 && n2) break;
+				if (n.id==node1) n1=true;
+				if (n.id==node2) n2=true;
+			}
+			if (!n1){
+				Node valid1;
+				valid1.i = nodes[node1].i;
+				valid1.j = nodes[node1].j;
+				valid1.id = node1;
+				valid1.agent.insert(-1);
+				valid_moves[node_id].push_back(valid1);
+			}
+			if (!n2){
+				Node valid2;
+				valid2.i = nodes[node2].i;
+				valid2.j = nodes[node2].j;
+				valid2.id = node2;
+				valid2.agent.insert(-1);
+				valid_moves[node_id].push_back(valid2);
+			}
+			
+		}
 	}
-	//std::cout<<"inserted"<<std::endl;
+	else{
+		node_id=nodes.size();
+		gNode tempnode(i,j);
+		nodes.push_back(tempnode);
+		this->size+=1;
+		nodes[node_id].agent.insert(agent);
+		nodes_table[ind]=node_id;
+		
+		std::vector<Node> neighbors;
+		Node valid1;
+		valid1.i = nodes[node1].i;
+		valid1.j = nodes[node1].j;
+		valid1.id = node1;
+		valid1.agent.insert(-1);
+		neighbors.push_back(valid1);
+		Node valid2;
+		valid2.i = nodes[node2].i;
+		valid2.j = nodes[node2].j;
+		valid2.agent.insert(-1);
+		valid2.id = node2;
+		neighbors.push_back(valid2);
+		valid_moves.push_back(neighbors);
+	}
 	//add nodes to node list
-	int nodeid=nodes.size();
-	gNode tempnode(i,j);
-    nodes.push_back(tempnode);
-	this->size+=1;
-	nodes[nodeid].neighbors.push_back(node1);
-	nodes[nodeid].neighbors.push_back(node2);
-	nodes[node1].neighbors.push_back(nodeid);
-	nodes[node2].neighbors.push_back(nodeid);
+	nodes[node_id].neighbors.push_back(node1);
+	nodes[node_id].neighbors.push_back(node2);
+	nodes[node1].neighbors.push_back(node_id);
+	nodes[node2].neighbors.push_back(node_id);
 	
 	//add node to hash_table
-	nodes_table[ind]=nodeid;
+	
 	
 	//add edges
-	Node node;
-	node.i=i;
-	node.j=j;
-	node.id=nodeid;
+	//Node node;
+	//node.i=i;
+	//node.j=j;
+	//node.id=nodeid;
 	
 	//break up the original edge
 	/*
@@ -399,20 +459,9 @@ int Map::add_node(double i, double j, int node1, int node2,int agent)
 	*/
 	//valid_moves[node1].push_back(node);
 	//valid_moves[node2].push_back(node);
-	std::vector<Node> neighbors;
-	Node valid1;
-	valid1.i = nodes[node1].i;
-    valid1.j = nodes[node1].j;
-    valid1.id = node1;
-    neighbors.push_back(valid1);
-	Node valid2;
-	valid2.i = nodes[node2].i;
-    valid2.j = nodes[node2].j;
-    valid2.id = node2;
-    neighbors.push_back(valid2);
-	valid_moves.push_back(neighbors);
+
 	
-	return nodeid;
+	return node_id;
 }
 
 void Map::print_map()
@@ -440,15 +489,32 @@ void Map::printPPM()
         }
 }
 
-
 bool Map::cell_is_obstacle(int i, int j) const
 {
     return (grid[i][j] == CN_OBSTL);
 }
 
-std::vector<Node> Map::get_valid_moves(int id) const
+std::vector<Node> Map::get_valid_moves(int id,int agent) const
 {
-    return valid_moves[id];
+    std::vector<Node> retval=valid_moves[id];
+	if (agent==-1)
+		return retval;
+	
+	for (int i=0;i<retval.size();++i){
+		if (retval[i].agent.find(-1)==retval[i].agent.end() && retval[i].agent.find(agent)==retval[i].agent.end()){
+		//if (retval[i].agent!=-1 && retval[i].agent!=agent){
+			/*if (valid_moves[retval[i].id].size()!=2){
+				std::cout<<"id: "<<id<<", agent: "<<agent<<", i:"<<i<<std::endl;
+				prt_validmoves();
+				assert(false);
+			}*/
+			if (valid_moves[retval[i].id][0].id==id)
+				retval[i]=valid_moves[retval[i].id][1];
+			else
+				retval[i]=valid_moves[retval[i].id][0];
+		}
+	}
+	return retval;
 }
 
 bool Map::check_line(int x1, int y1, int x2, int y2)
@@ -550,8 +616,9 @@ bool Map::check_line(int x1, int y1, int x2, int y2)
     }
     return true;
 }
+
 void Map::prt_ind(node_index n){
-	std::cout<<" ("<<n.first.first<<","<<n.first.second<<") a:"<<n.second<<std::endl;
+	std::cout<<" ("<<n.first<<","<<n.second<<")"<<std::endl;
 }
 
 void Map::prt_nodes(){
@@ -562,17 +629,25 @@ void Map::prt_nodes(){
 		prt_ind(it->first);
 	}
 }
-void Map::prt_validmoves(){
+
+void Map::prt_validmoves() const{
 	//std::cout<<"Map:"<<std::endl;
 	for (int i=0;i<valid_moves.size();++i){
 		auto vecNode=valid_moves[i];
 		std::cout<<"|"<<i<<": ";
 		for (Node n:vecNode){
-			std::cout<<n.id<<", ";
+			std::cout<<n.id<<"(";
+			prt_set(n.agent);
+			std::cout<<"), ";
 		}
 		std::cout<<std::endl;
 	}
 	std::cout<<"&&&&&&&"<<std::endl<<std::endl;
+}
+
+void Map::prt_set(std::set<int> s) const{
+	for (int i:s)
+		std::cout<<i<<",";
 }
 
 void Map::alter(Map_delta map_delta){
@@ -588,6 +663,7 @@ void Map::alter(Map_delta map_delta){
 			valid_moves[v1][i].i=get_i(node_id);
 			valid_moves[v1][i].j=get_j(node_id);
 			valid_moves[v1][i].id=node_id;
+			valid_moves[v1][i].agent=nodes[node_id].agent;
 			break;
 		}
 	}
@@ -597,6 +673,7 @@ void Map::alter(Map_delta map_delta){
 			valid_moves[v2][i].i=get_i(node_id);
 			valid_moves[v2][i].j=get_j(node_id);
 			valid_moves[v2][i].id=node_id;
+			valid_moves[v2][i].agent=nodes[node_id].agent;
 			break;
 		}
 	}
@@ -615,6 +692,7 @@ void Map::alter_back(Map_delta map_delta){
 			valid_moves[v1][i].i=get_i(v2);
 			valid_moves[v1][i].j=get_j(v2);
 			valid_moves[v1][i].id=v2;
+			valid_moves[v1][i].agent=nodes[i].agent;
 		}
 	}
 	
@@ -623,6 +701,7 @@ void Map::alter_back(Map_delta map_delta){
 			valid_moves[v2][i].i=get_i(v1);
 			valid_moves[v2][i].j=get_j(v1);
 			valid_moves[v2][i].id=v1;
+			valid_moves[v2][i].agent=nodes[i].agent;
 		}
 	}
 }

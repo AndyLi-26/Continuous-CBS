@@ -19,10 +19,12 @@ double SIPP::dist(const Node& a, const Node& b)
 void SIPP::find_successors(Node curNode, const Map &map, std::list<Node> &succs, Heuristic &h_values, Node goal)
 {
     Node newNode;
-    std::vector<Node> valid_moves = map.get_valid_moves(curNode.id);
+    std::vector<Node> valid_moves = map.get_valid_moves(curNode.id,agent.id);
     for(int i=0;i<valid_moves.size();++i)
     {
 		Node move = valid_moves[i];
+		if (move.agent.find(-1)==move.agent.end() && move.agent.find(agent.id)==move.agent.end())
+			continue;
         newNode.i = move.i;
         newNode.j = move.j;
         newNode.id = move.id;
@@ -44,6 +46,7 @@ void SIPP::find_successors(Node curNode, const Map &map, std::list<Node> &succs,
         }
         else
             intervals.push_back({0, CN_INFINITY});
+		
 		//int to_index=map.valid_moves
         auto cons_it = constraints.find({curNode.id,i});
         int id(0);			
@@ -149,14 +152,14 @@ std::vector<Node> SIPP::reconstruct_path(Node curNode)
 
 void SIPP::add_collision_interval(int id, std::pair<double, double> interval)
 {
-
     std::vector<std::pair<double, double>> intervals(0);
-    if(collision_intervals.count(id) == 0)
+    if(collision_intervals.count(id) == 0){
         collision_intervals.insert({id, {interval}});
+	}
     else
         collision_intervals[id].push_back(interval);
     std::sort(collision_intervals[id].begin(), collision_intervals[id].end());
-    for(unsigned int i = 0; i + 1 < collision_intervals[id].size(); i++)
+	for(unsigned int i = 0; i + 1 < collision_intervals[id].size(); i++)
         if(collision_intervals[id][i].second + CN_EPSILON > collision_intervals[id][i+1].first)
         {
             collision_intervals[id][i].second = collision_intervals[id][i+1].second;
@@ -220,7 +223,7 @@ void SIPP::add_move_constraint(Move move)
     }
 }
 
-void SIPP::make_constraints(std::list<Constraint> &cons)
+void SIPP::make_constraints(std::list<Constraint> &cons,const Map &map)
 {
     for(auto con : cons)
     {
@@ -235,15 +238,17 @@ void SIPP::make_constraints(std::list<Constraint> &cons)
         else
         {
             bool inserted = false;
+			auto temp=map.get_valid_moves(con.id1,agent.id);
+			int id2=temp[con.id2].id;
             for(unsigned int i = 0; i < landmarks.size(); i++)
                 if(landmarks[i].t1 > con.t1)
                 {
-                    landmarks.insert(landmarks.begin() + i, Move(con.t1, con.t2, con.id1, con.id2));
+                    landmarks.insert(landmarks.begin() + i, Move(con.t1, con.t2, con.id1, id2));
                     inserted = true;
                     break;
                 }
             if(!inserted)
-                landmarks.push_back(Move(con.t1, con.t2, con.id1, con.id2));
+                landmarks.push_back(Move(con.t1, con.t2, con.id1, id2));
         }
     }
 }
@@ -382,11 +387,15 @@ double SIPP::check_endpoint(Node start, Node goal)
         return start.g + cost;
 }
 
-Path SIPP::find_path(Agent agent, const Map &map, std::list<Constraint> cons, Heuristic &h_values)
-{
+Path SIPP::find_path(Agent agent, const Map &map, std::list<Constraint> cons, Heuristic &h_values){
     this->clear();
     this->agent = agent;
-    make_constraints(cons);
+	//std::cout<<"planning:"<<std::endl;
+	//std::cout<<agent.id<<std::endl;
+	//map.prt_validmoves();
+	//prt_constraints(cons);
+	
+    make_constraints(cons,map);
 
     std::vector<Node> starts, goals;
     std::vector<Path> parts, results, new_results;
@@ -505,5 +514,24 @@ Path SIPP::find_path(Agent agent, const Map &map, std::list<Constraint> cons, He
     result.cost = result.nodes.back().g;
     result.agentID = agent.id;
     result.expanded = expanded;
+	Path p=result;
+	/*if (p.agentID==5){
+	std::cout<<"solution:"<<std::endl;
+	std::cout<<p.agentID<<":";
+		for (sNode n:p.nodes){
+			std::cout<<"("<<n.id<<","<<n.g<<")->";
+		}
+		std::cout<<std::endl;
+	}*/
     return result;
+}
+
+void SIPP::prt_constraint(Constraint c){
+	std::cout<<"Constraint  a:"<<c.agent<<" from:"<<c.id1<<"to:"<<c.id2<<"[t:"<<c.t1<<"~"<<c.t2<<"]"<<std::endl;
+}
+
+void SIPP::prt_constraints(std::list<Constraint> constraints){
+	std::cout<<std::endl<<"constraints:"<<std::endl;
+	for(Constraint c:constraints)
+		prt_constraint(c);
 }

@@ -31,13 +31,13 @@ struct Node
 {
     int     id;
     double  f, g, i, j;
-	//int positive_agent=-1;  //visible to some agent, -1 is everyone
+	std::set<int> agent;  //visible to some agent, -1 is everyone
 	//std::vector<int> negtive_list;
     Node*   parent;
     std::pair<double, double> interval;
     int interval_id;
     Node(int _id = -1, double _f = -1, double _g = -1, double _i = -1, double _j = -1, Node* _parent = nullptr, double begin = -1, double end = -1)
-        :id(_id), f(_f), g(_g), i(_i), j(_j), parent(_parent), interval(std::make_pair(begin, end)) {interval_id = 0;}
+        :id(_id), f(_f), g(_g), i(_i), j(_j), parent(_parent), interval(std::make_pair(begin, end)) {interval_id = 0;agent.insert(-1);}
     bool operator <(const Node& other) const //required for heuristic calculation
     {
         return this->g < other.g;
@@ -60,7 +60,9 @@ struct Node
 		{
 			size_t a1 = std::hash<int>()(n->i);
 			size_t a2 = std::hash<int>()(n->j);
-			return (a1 ^ (a2 << 1));
+			//size_t a3 = std::hash<int>()(n->agent);
+			//return (a1<<1 ^ (a2 << 1)*(a3 << 1));
+			return (a1<<1 ^ (a2 << 1));
 		}
 	};
 };
@@ -69,7 +71,7 @@ struct gNode
 {
     double i;
     double j;
-	//int agent; //visible to some agent, -1 is everyone
+	std::set<int> agent; //visible to some agent, -1 is everyone
     std::vector<int> neighbors;
     gNode(double i_ = -1, double j_ = -1):i(i_), j(j_){}
 	
@@ -225,8 +227,10 @@ struct Conflict
 		return os;
 	}
 };
+
 struct Map_delta{
 	int add_node;
+	//int agent; //positive agent
 	std::pair<int,int> del_edge;
 	
 	Map_delta(int _add_node = -1, std::pair<int,int> _del_edge=std::make_pair(-1,-1))

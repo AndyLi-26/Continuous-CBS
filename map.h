@@ -28,7 +28,7 @@ private:
 	int nodes_num; //public node limit
 	int init_node_num;
 	void prt_nodes();
-	typedef std::pair<std::pair<double,double>,int> node_index;
+	typedef std::pair<double,double> node_index;
 	typedef boost::unordered_map<node_index,int> hast_table;
 	hast_table nodes_table;
 	
@@ -47,12 +47,13 @@ public:
     double get_i (int id) const;
     double get_j (int id) const;
 	int add_node(double i, double j, int node1, int node2,int agent);
-    std::vector<Node> get_valid_moves(int id) const;
+    std::vector<Node> get_valid_moves(int id,int agent) const;
 	double fit2grid(double val){return round(val/CN_RESOLUTION)*CN_RESOLUTION;}
     void print_map();
     void printPPM();
 	void prt_ind(node_index n);
-	void prt_validmoves();
+	void prt_set(std::set<int> s) const;
+	void prt_validmoves() const;
 	void alter(Map_delta map_delta);
 	void alter_back(Map_delta map_delta);
 	bool equal(Map *m);

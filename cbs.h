@@ -41,7 +41,7 @@ public:
 	Constraint get_split_constraint(int agent, Move move1, Move move2);
 	void gen_new_map(CBS_Node *node);
 	void gen_original_map(CBS_Node *node);
-	int id2ind(int v1, int v2);
+	int id2ind(int v1, int v2, int agent);
 	void prt_move(Move m1);
 	void prt_constraint(Constraint c);
 	void prt_constraints(std::list<Constraint> constraints);
@@ -49,6 +49,7 @@ public:
 	void prt_conflicts(list<Conflict> conflicts);
 	void prt_path(sPath p);
 	void prt_paths(std::vector<sPath> paths);
+	void prt_map_delta_pair(Map_delta_pair delta_pair);
 	void saveCT(const string &fileName,CBS_Node *goal_node,unsigned int agent_num);
     CBS_Tree tree;
     SIPP planner;

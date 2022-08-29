@@ -17,7 +17,7 @@ void Heuristic::count(const Map &map, Agent agent)
     {
         curNode = find_min();
         h_values[curNode.id][agent.id] = curNode.g;
-        std::vector<Node> valid_moves = map.get_valid_moves(curNode.id);
+        std::vector<Node> valid_moves = map.get_valid_moves(curNode.id,agent.id);
         for(auto move: valid_moves)
         {
             newNode.i = move.i;

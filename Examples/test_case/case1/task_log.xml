@@ -3,11 +3,12 @@
     <agent start_id="1" goal_id="3"/>
     <agent start_id="0" goal_id="2"/>
     <log>
-        <summary time="0.0029429999999999999" flowtime="283.26697654701877" makespan="141.84562030970929"/>
+        <summary time="0.0071095999999999998" flowtime="295.57063457865053" makespan="154.14927834134102"/>
         <agent number="0">
-            <path duration="141.84562030970929">
-                <section number="0" start_i="200" start_j="100" goal_i="200" goal_j="100" duration="0.42426407239977948"/>
-                <section number="1" start_i="200" start_j="100" goal_i="100" goal_j="200" duration="141.42135623730951"/>
+            <path duration="154.14927834134102">
+                <section number="0" start_i="200" start_j="100" goal_i="156.40000000000001" goal_j="143.59999999999999" duration="61.659711319466936"/>
+                <section number="1" start_i="156.40000000000001" start_j="143.59999999999999" goal_i="156.40000000000001" goal_j="143.59999999999999" duration="12.727922104031506"/>
+                <section number="2" start_i="156.40000000000001" start_j="143.59999999999999" goal_i="100" goal_j="200" duration="79.761644917842574"/>
             </path>
         </agent>
         <agent number="1">
