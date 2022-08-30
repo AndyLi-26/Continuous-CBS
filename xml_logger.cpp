@@ -109,16 +109,18 @@ void XML_logger::write_to_log_path(const Solution &solution, const Map &map)
     }
 }
 
-void XML_logger::txt_writer(const Solution &solution, const Config &config)
+void XML_logger::txt_writer(const Solution &solution, const Config &config, int new_nodes)
 {
 	ofstream stats;
 	if (config.output != "")
 	{
 		stats.open(config.output, ios::app);
-		stats <<config.agent_num<<"," 
+		stats <<config.agent_size<<","
+		<<config.agent_num<<"," 
 		<<solution.time.count()<<"," 
 		<<solution.flowtime<<","
 		<<solution.makespan<<","
+		<<new_nodes<<","
 		<<endl;
 		stats.close();
 		cout<<"git here"<<endl;

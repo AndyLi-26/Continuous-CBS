@@ -20,8 +20,8 @@ bool CBS::init_root(Map &map, const Task &task)
     root.id_str = "1";
     auto conflicts = get_all_conflicts(root.paths, -1);
     root.conflicts_num = conflicts.size();
-	cout<<"init_path"<<endl;
-	prt_paths(root.paths);
+	//cout<<"init_path"<<endl;
+	//prt_paths(root.paths);
     for(auto conflict: conflicts)
         if(!config.use_cardinal)
             root.conflicts.push_back(conflict);
@@ -340,6 +340,8 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
         parent->cardinal_conflicts.clear();
         parent->semicard_conflicts.clear();
 		//cout<<"###   "<<node.id<<"   #####################################"<<endl;
+		//cout<<"###"<<endl;
+		//cout<<node.id<<endl;
 		auto paths = get_paths(&node, task.get_agents_size());
 		//prt_paths(paths);
 		//cout<<flush;
@@ -368,7 +370,7 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
         else
             conflict = get_conflict(conflicts);
 		
-		parent->cur_conflict=conflict; //del when experiment
+		//parent->cur_conflict=conflict; //del when experiment
 		Map_delta_pair info;
 		//prt_conflict(conflict);
 		if(config.use_edge_split)
@@ -471,13 +473,14 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
 		else{
 			pathB = planner.find_path(task.get_agent(conflict.agent2), map, constraintsB, h_values);
 		}
-		
+		/*
 		if (config.use_edge_split){
 			gen_original_map(&node);
 			//cout<<"original"<<endl;
 			//map.prt_validmoves();
 			assert(map.equal(original));
 		}
+		*/
 		low_level_searches++;
 		low_level_expanded += pathB.expanded;
 		
@@ -552,10 +555,13 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
         left.id_str = node.id_str + "1";
         right.id = id++;
         left.id = id++;
+		//cout<<node.id<<"->"<<right.id<<endl;
+		//cout<<node.id<<"->"<<left.id<<endl;
 		/*
-		if (left.id>=10){
-			string file="CT_tree_no_sol.dot";
-			saveCT(file,&node,task.get_agents_size());
+		if (left.id>=3000){
+			//string file="CT_tree_no_sol.dot";
+			//saveCT(file,&node,task.get_agents_size());
+			//printBT("", dummy_start, false);
 			assert(false);
 		}
 		*/
@@ -589,7 +595,6 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
 					assert(false);
 				}
 				*/
-                
             }
         }
         if(left_ok && pathB.cost > 0 && validate_constraints(constraintsB, pathB.agentID))
@@ -613,6 +618,22 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
 				tree.add_node(left);
 				/*
 				if (node.cost+node.h-0.1>left.cost+config.precision){
+					cout<<endl<<endl<<endl;
+					cout<<"left id:"<<left.id<<endl;
+					cout<<"map:"<<endl;
+					map.prt_validmoves();
+					cout<<"conflict";
+					prt_conflict(conflict);
+					cout<<"costraints4:"<<endl;
+					std::list<Constraint> temp = get_constraints(&left, 4);
+					prt_constraints(temp);
+					cout<<"parent"<<endl;
+					auto paths = get_paths(&node, task.get_agents_size());
+					prt_paths(paths);
+					cout<<"new left:"<<endl;
+					paths = get_paths(&left, task.get_agents_size());
+					prt_paths(paths);
+					
 					cout<<"g+h="<<node.cost<<"+"<<node.h<<">"<<left.cost<<endl;
 					cout<<flush;
 					string file="CT_tree_no_sol.dot";
@@ -844,9 +865,6 @@ Conflict CBS::check_paths(const sPath &pathA, const sPath &pathB)
         {
             if(dist < (nodesA[a+1].g - nodesA[a].g) + (nodesB[b+1].g - nodesB[b].g) + config.agent_size*2)
                 if(check_conflict(Move(nodesA[a], nodesA[a+1]), Move(nodesB[b], nodesB[b+1]))){
-					if (std::min(nodesA[a].g, nodesB[b].g)<0){
-						assert(false);
-					}
 					return Conflict(pathA.agentID, pathB.agentID, Move(nodesA[a], nodesA[a+1]), Move(nodesB[b], nodesB[b+1]), std::min(nodesA[a].g, nodesB[b].g));
 				}
         }
@@ -854,9 +872,6 @@ Conflict CBS::check_paths(const sPath &pathA, const sPath &pathB)
         {
             if(dist < (nodesB[b+1].g - nodesB[b].g) + config.agent_size*2)
                 if(check_conflict(Move(nodesA[a].g, CN_INFINITY, nodesA[a].id, nodesA[a].id), Move(nodesB[b], nodesB[b+1]))){
-					if (std::min(nodesA[a].g, nodesB[b].g)<0){
-						assert(false);
-					}
                     return Conflict(pathA.agentID, pathB.agentID, Move(nodesA[a].g, CN_INFINITY, nodesA[a].id, nodesA[a].id), Move(nodesB[b], nodesB[b+1]), std::min(nodesA[a].g, nodesB[b].g));
 				}
         }
@@ -864,9 +879,6 @@ Conflict CBS::check_paths(const sPath &pathA, const sPath &pathB)
         {
             if(dist < (nodesA[a+1].g - nodesA[a].g) + config.agent_size*2)
                 if(check_conflict(Move(nodesA[a], nodesA[a+1]), Move(nodesB[b].g, CN_INFINITY, nodesB[b].id, nodesB[b].id))){
-					if (std::min(nodesA[a].g, nodesB[b].g)<0){
-						assert(false);
-					}
                     return Conflict(pathA.agentID, pathB.agentID, Move(nodesA[a], nodesA[a+1]), Move(nodesB[b].g, CN_INFINITY, nodesB[b].id, nodesB[b].id), std::min(nodesA[a].g, nodesB[b].g));
 				}
         }
@@ -960,6 +972,7 @@ CBS::Map_delta_pair CBS::split_edge(Conflict conflict){
 	if ((node11==node22) && (node12==node21)) //cross each other
 		return retval;
 		//check time
+		
 	if (node12 == node22 || node21==node11){ //node conflict
 		double new_i,new_j;
 		int new_id;
@@ -1009,6 +1022,7 @@ CBS::Map_delta_pair CBS::split_edge(Conflict conflict){
 	}
 	
 	else if(node12 != node22 and node11 != node21){//edge conflict
+	
 		double r(config.agent_size);
 		double i0(map->get_i(node11)),j0(map->get_j(node11));
 		double i1(map->get_i(node12)),j1(map->get_j(node12));
@@ -1103,8 +1117,6 @@ CBS::Map_delta_pair CBS::split_edge(Conflict conflict){
 			//}
 		}
 	}
-	else
-		assert(false);
 	//cout<<endl;
 	return retval;
 }
@@ -1174,12 +1186,12 @@ void CBS::prt_conflict(Conflict conflict){
 	int node12=conflict.move1.id2;
 	int node21=conflict.move2.id1;
 	int node22=conflict.move2.id2;
-	cout<<"------------------"<<endl;
+	//cout<<"------------------"<<endl;
 	cout<<"conflict: [id] (coord1->coord2) @[t]"<<endl;
 	cout<<"[a"<<conflict.agent1<<":"<<node11<<"->"<<node12<<"] ("<<map->get_i(node11)<<","<<map->get_j(node11)<<") -> ("
 	<<map->get_i(node12)<<","<<map->get_j(node12)<<") @["<<conflict.move1.t1<<"~"<<conflict.move1.t2<<"]"<<endl;
 	cout<<"[a"<<conflict.agent2<<":"<<node21<<"->"<<node22<<"] ("<<map->get_i(node21)<<","<<map->get_j(node21)<<") -> ("
-	<<map->get_i(node22)<<","<<map->get_j(node22)<<") @["<<conflict.move2.t1<<"~"<<conflict.move2.t2<<"]"<<endl<<endl;
+	<<map->get_i(node22)<<","<<map->get_j(node22)<<") @["<<conflict.move2.t1<<"~"<<conflict.move2.t2<<"]"<<endl;
 //"[move1_t:"<<conflict.move1.t1<<"~"<<conflict.move1.t2<<"] [move2_t:"<<conflict.move2.t1<<"~"<<conflict.move2.t2<<"]"<<endl;
 }
 
@@ -1255,3 +1267,31 @@ void CBS::prt_map_delta_pair(Map_delta_pair delta_pair){
 	cout<<"("<<delta_pair.first.del_edge.first<<") -- ("<<delta_pair.first.add_node<<") -- ("<<delta_pair.first.del_edge.second<<")"<<endl;
 	cout<<"("<<delta_pair.second.del_edge.first<<") -- ("<<delta_pair.second.add_node<<") -- ("<<delta_pair.second.del_edge.second<<")"<<endl;
 }
+/*
+void ICBSSearch::printBT(const std::string& prefix, const CBS_Node* node, bool isLeft)
+{
+ if (node != NULL)
+ {
+  cout << prefix;
+  cout << (isLeft ? "├──" : "└──");
+  if (node->conflict != nullptr) {
+	int node11=node->conflict.move1.id1;
+	int node12=node->conflict.move1.id2;
+	int node21=node->conflict.move2.id1;
+	int node22=node->conflict.move2.id2;
+	cout<<"[a"<<node->conflict.agent1<<":"<<node11<<"->"<<node12<<"] ("<<map->get_i(node11)<<","<<map->get_j(node11)<<") -> ("
+	<<map->get_i(node12)<<","<<map->get_j(node12)<<") @["<<node->conflict.move1.t1<<"~"<<node->conflict.move1.t2<<"]"<<endl;
+	cout << prefix;
+	cout<<"[a"<<node->conflict.agent2<<":"<<node21<<"->"<<node22<<"] ("<<map->get_i(node21)<<","<<map->get_j(node21)<<") -> ("
+	<<map->get_i(node22)<<","<<map->get_j(node22)<<") @["<<node->conflict.move2.t1<<"~"<<node->conflict.move2.t2<<"]"<<endl<<endl;
+  }
+  else {
+      std::cout << "No choosen conflict "<<" "<< node->g_val << std::endl;
+  }
+
+  for (int i = 0; i < node->children.size(); i++) {
+   printBT(prefix + (isLeft ? "│   " : "    "), node->children[i], i == node->children.size() - 1 ? false: true);
+  }
+ }
+}
+*/

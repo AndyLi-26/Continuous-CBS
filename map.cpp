@@ -362,8 +362,6 @@ int Map::add_node(double i, double j, int node1, int node2,int agent)
 	//std::cout<<"("<<ind.first.first<<","<<ind.first.second<<") a:"<<ind.second<<std::endl;
 	//prt_nodes();
 	int node_id;
-	if (get_new_node_num()>10)
-		return -1;
 	if (it != nodes_table.end())
 	{
 		node_id=it->second;

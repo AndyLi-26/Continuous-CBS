@@ -1,5 +1,5 @@
 clc; clear all; close all;
-obj = VideoWriter("demo.mp4", 'MPEG-4');
+obj = VideoWriter("sparse_s_1.mp4", 'MPEG-4');
 obj.Quality = 100;
 obj.FrameRate = 20;
 open(obj);
@@ -29,12 +29,12 @@ tasks=readmatrix('tasks.csv');
 %agents=size(tasks,1);
 a=dir(['paths\*.csv']);
 agents=length(extractfield(a,"name"));
-colors=jet(agents);
-for i=1:agents
+colors=jet(agents+1);
+for i=1:agents+1
     plot(nodes(tasks(i,1)+1,1),nodes(tasks(i,1)+1,2),'.',MarkerFaceColor=colors(i,:),MarkerSize=10);
     text(nodes(tasks(i,1)+1,1),nodes(tasks(i,1)+1,2),num2str(i),'Color','black','FontSize',9)
 end
-for i=1:agents
+for i=1:agents+1
     plot(nodes(tasks(i,2)+1,1),nodes(tasks(i,2)+1,2),'p',MarkerFaceColor=colors(i,:),MarkerSize=10);
 end
 f = getframe(gcf);

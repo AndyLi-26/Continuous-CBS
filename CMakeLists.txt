@@ -8,7 +8,7 @@ set(Boost_USE_STATIC_LIBS OFF)
 include_directories( ${Boost_INCLUDE_DIRS} )
 include_directories( "." )
 
-set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O2 -Wall -Wextra -O0 -ggdb3" )
+set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O2 -Wall -Wextra -ggdb3" )
 set( CMAKE_EXE_LINKER_FLAGS "-static -static-libgcc -static-libstdc++" )
 
 set( SOURCE_FILES 

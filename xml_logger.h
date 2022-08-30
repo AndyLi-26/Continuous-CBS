@@ -23,7 +23,7 @@ public:
     void save_log();
     void write_to_log_summary(const Solution &solution);
     void write_to_log_path(const Solution &solution, const Map &map);
-	void txt_writer(const Solution &solution, const Config &config);
+	void txt_writer(const Solution &solution, const Config &config, int new_nodes);
 };
 
 #endif // XML_LOGGER_H
