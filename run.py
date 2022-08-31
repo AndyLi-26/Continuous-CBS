@@ -4,7 +4,7 @@ exe = "./debug/CCBS"
 map_address ="./experiments/{}/{}/map.xml"
 task_address="./experiments/{}/{}/tasks/task{}.xml"
 config = "./experiments/{}/configs/{}/conf_{}.xml"
-for a_size in [0.5,1.0,1.5,2.0,2.5,3.0,3.5,4.0,4.5]:
+for a_size in [0.5,1.5,2.5,3.5,4.5]:
     for m in ["sparse","dense","super-dense"]:
         for e_sp in ["split","no_split"]:
             for a in range(5,15):
