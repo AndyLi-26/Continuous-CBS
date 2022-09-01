@@ -1,19 +1,19 @@
 <?xml version="1.0" ?>
 <root>
     <agent start_id="1" goal_id="3"/>
-    <agent start_id="0" goal_id="2"/>
+    <agent start_id="2" goal_id="0"/>
     <log>
-        <summary time="0.0071095999999999998" flowtime="295.57063457865053" makespan="154.14927834134102"/>
+        <summary time="0.0031445000000000002" flowtime="129.68551243695751" makespan="69.722857392338284"/>
         <agent number="0">
-            <path duration="154.14927834134102">
-                <section number="0" start_i="200" start_j="100" goal_i="156.40000000000001" goal_j="143.59999999999999" duration="61.659711319466936"/>
-                <section number="1" start_i="156.40000000000001" start_j="143.59999999999999" goal_i="156.40000000000001" goal_j="143.59999999999999" duration="12.727922104031506"/>
-                <section number="2" start_i="156.40000000000001" start_j="143.59999999999999" goal_i="100" goal_j="200" duration="79.761644917842574"/>
+            <path duration="69.722857392338284">
+                <section number="0" start_i="30" start_j="40" goal_i="30" goal_j="56.600000000000001" duration="16.600000000000001"/>
+                <section number="1" start_i="30" start_j="56.600000000000001" goal_i="30" goal_j="56.600000000000001" duration="9.7228573923382839"/>
+                <section number="2" start_i="30" start_j="56.600000000000001" goal_i="30" goal_j="100" duration="43.399999999999999"/>
             </path>
         </agent>
         <agent number="1">
-            <path duration="141.42135623730951">
-                <section number="0" start_i="100" start_j="100" goal_i="200" goal_j="200" duration="141.42135623730951"/>
+            <path duration="59.962655044619233">
+                <section number="0" start_i="51.200000000000003" start_j="48.800000000000004" goal_i="8.8000000000000007" goal_j="91.200000000000003" duration="59.962655044619233"/>
             </path>
         </agent>
     </log>

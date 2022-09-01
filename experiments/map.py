@@ -5,7 +5,7 @@ sconf='''<?xml version="1.0" ?>
 	<algorithm>
 		<use_cardinal>true</use_cardinal>
 		<use_disjoint_splitting>false</use_disjoint_splitting>
-		<hlh_type>2</hlh_type>
+		<hlh_type>0</hlh_type>
 		<connectedness>2</connectedness>
 		<focal_weight>1.0</focal_weight>
 		<agent_size>{}</agent_size>
@@ -52,18 +52,20 @@ def exportTaskCSV(tasks):
 
 if __name__=="__main__":
     for agent_size in [0.5,1.0,1.5,2.0,2.5,3.0,3.5,4.0,4.5]:
-        ##gen configs
+
         print(agent_size)
-        for config in ["split","no_split"]:
-            a_num=range(5,26)
-            edgeSplit="true" if config=="split" else "false"
-            for a in a_num:
-                with open("{}\configs\{}\conf_{}.xml".format(agent_size,config,a),"w") as f:
-                    optName="a{}-num{}-e{}.csv".format(agent_size,a,int(config=="split"))
-                    print(sconf.format(round(agent_size,1),a,edgeSplit,optName),file=f)
+        
         ##gen node list
         for fn in ["sparse","dense","super-dense"]:
             print(fn)
+            ##gen configs
+            for config in ["split","no_split"]:
+                a_num=range(5,26)
+                edgeSplit="true" if config=="split" else "false"
+                for a in a_num:
+                    with open("{}\configs\{}\conf_{}.xml".format(agent_size,config,a),"w") as f:
+                        optName="a{}-num{}-e{}-{}.csv".format(agent_size,a,int(config=="split"),fn)
+                        print(sconf.format(round(agent_size,1),a,edgeSplit,optName),file=f)
             with open(str(agent_size)+'\\'+fn+'\\'+"map.xml",'r') as f:
                 s=f.read().strip()
             s=remove_rubbish(s)

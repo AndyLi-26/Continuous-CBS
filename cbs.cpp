@@ -49,6 +49,7 @@ bool CBS::init_root(Map &map, const Task &task)
 
 bool CBS::check_conflict(Move move1, Move move2)
 {
+	
     double startTimeA(move1.t1), endTimeA(move1.t2), startTimeB(move2.t1), endTimeB(move2.t2);
     double m1i1(map->get_i(move1.id1)), m1i2(map->get_i(move1.id2)), m1j1(map->get_j(move1.id1)), m1j2(map->get_j(move1.id2));
     double m2i1(map->get_i(move2.id1)), m2i2(map->get_i(move2.id2)), m2j1(map->get_j(move2.id1)), m2j2(map->get_j(move2.id2));
@@ -76,10 +77,10 @@ bool CBS::check_conflict(Move move1, Move move2)
     double a(v*v);
     double b(w*v);
     double dscr(b*b - a*c);
-    if(dscr - CN_EPSILON < 0)
+    if(dscr - config.precision < 0)
         return false;
     double ctime = (b - sqrt(dscr))/a;
-    if(ctime > -CN_EPSILON && ctime < std::min(endTimeB,endTimeA) - startTimeA + CN_EPSILON)
+    if(ctime > - config.precision  && ctime < std::min(endTimeB,endTimeA) - startTimeA +  config.precision )
         return true;
     return false;
 }
@@ -339,11 +340,11 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
         parent->conflicts.clear();
         parent->cardinal_conflicts.clear();
         parent->semicard_conflicts.clear();
-		//cout<<"###   "<<node.id<<"   #####################################"<<endl;
+		cout<<"###   "<<node.id<<"   #####################################"<<endl;
 		//cout<<"###"<<endl;
 		//cout<<node.id<<endl;
 		auto paths = get_paths(&node, task.get_agents_size());
-		//prt_paths(paths);
+		prt_paths(paths);
 		//cout<<flush;
 		//prt_conflicts(parent->conflicts);
 		//cout<<"------------------"<<endl;
@@ -372,9 +373,9 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
 		
 		//parent->cur_conflict=conflict; //del when experiment
 		Map_delta_pair info;
-		//prt_conflict(conflict);
+		prt_conflict(conflict);
 		if(config.use_edge_split)
-			info=split_edge(conflict);
+			info=split_edge(conflict, paths);
 		//prt_map_delta_pair(info);
 		
         time_spent = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::high_resolution_clock::now() - time_now);
@@ -399,8 +400,8 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
 			constraintA = get_constraint(conflict.agent1, conflict.move1, conflict.move2);
 			constraintsA.push_back(constraintA);
 		}
-		//cout<<"new constraintA:  ";
-		//prt_constraint(constraintA);
+		cout<<"new constraintA:  ";
+		prt_constraint(constraintA);
 		//cout<<"||"<<endl;
 		//prt_constraints(constraintsA);
 		//cout<<"----"<<endl;
@@ -452,8 +453,8 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
 			//prt_move(conflict.move1);
 			constraintsB.push_back(constraintB);
 		}
-		//cout<<"new constraintB:  ";
-		//prt_constraint(constraintB);
+		cout<<"new constraintB:  ";
+		prt_constraint(constraintB);
 		//cout<<"||"<<endl;
 		//prt_constraints(constraintsB);
 		//cout<<"----"<<endl;
@@ -558,7 +559,7 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
 		//cout<<node.id<<"->"<<right.id<<endl;
 		//cout<<node.id<<"->"<<left.id<<endl;
 		/*
-		if (left.id>=3000){
+		if (left.id>=35){
 			//string file="CT_tree_no_sol.dot";
 			//saveCT(file,&node,task.get_agents_size());
 			//printBT("", dummy_start, false);
@@ -709,6 +710,7 @@ void CBS::find_new_conflicts(Map &map, const Task &task, CBS_Node &node, std::ve
 {
     auto oldpath = paths[path.agentID];
     paths[path.agentID] = path;
+	//cout<<"checking conf###############"<<endl;
     auto new_conflicts = get_all_conflicts(paths, path.agentID);
     paths[path.agentID] = oldpath;
     std::list<Conflict> conflictsA({}), semicard_conflictsA({}), cardinal_conflictsA({});
@@ -872,14 +874,14 @@ Conflict CBS::check_paths(const sPath &pathA, const sPath &pathB)
         {
             if(dist < (nodesB[b+1].g - nodesB[b].g) + config.agent_size*2)
                 if(check_conflict(Move(nodesA[a].g, CN_INFINITY, nodesA[a].id, nodesA[a].id), Move(nodesB[b], nodesB[b+1]))){
-                    return Conflict(pathA.agentID, pathB.agentID, Move(nodesA[a].g, CN_INFINITY, nodesA[a].id, nodesA[a].id), Move(nodesB[b], nodesB[b+1]), std::min(nodesA[a].g, nodesB[b].g));
+					return Conflict(pathA.agentID, pathB.agentID, Move(nodesA[a].g, CN_INFINITY, nodesA[a].id, nodesA[a].id), Move(nodesB[b], nodesB[b+1]), std::min(nodesA[a].g, nodesB[b].g));
 				}
         }
         else if(b == nodesB.size() - 1) // if agent B has already reached the goal
         {
             if(dist < (nodesA[a+1].g - nodesA[a].g) + config.agent_size*2)
                 if(check_conflict(Move(nodesA[a], nodesA[a+1]), Move(nodesB[b].g, CN_INFINITY, nodesB[b].id, nodesB[b].id))){
-                    return Conflict(pathA.agentID, pathB.agentID, Move(nodesA[a], nodesA[a+1]), Move(nodesB[b].g, CN_INFINITY, nodesB[b].id, nodesB[b].id), std::min(nodesA[a].g, nodesB[b].g));
+					return Conflict(pathA.agentID, pathB.agentID, Move(nodesA[a], nodesA[a+1]), Move(nodesB[b].g, CN_INFINITY, nodesB[b].id, nodesB[b].id), std::min(nodesA[a].g, nodesB[b].g));
 				}
         }
         if(a == nodesA.size() - 1)
@@ -963,7 +965,7 @@ bool CBS::validNewNode(Vector2D X1,Vector2D X2,Vector2D New){
 	return h>2*config.agent_size;
 }
 
-CBS::Map_delta_pair CBS::split_edge(Conflict conflict){
+CBS::Map_delta_pair CBS::split_edge(Conflict conflict, std::vector<sPath> paths){
 	int node11=conflict.move1.id1;
 	int node12=conflict.move1.id2;
 	int node21=conflict.move2.id1;
@@ -971,59 +973,61 @@ CBS::Map_delta_pair CBS::split_edge(Conflict conflict){
 	std::pair<Map_delta,Map_delta> retval({Map_delta(),Map_delta()});
 	if ((node11==node22) && (node12==node21)) //cross each other
 		return retval;
-		//check time
-		
-	if (node12 == node22 || node21==node11){ //node conflict
-		double new_i,new_j;
-		int new_id;
-		Vector2D A,B;
-		//cout<<"node:";
-		if (node11!=node12){
-			A = Vector2D(map->get_i(node11),map->get_j(node11));
-			B = Vector2D(map->get_i(node12),map->get_j(node12));
-			//if (sqrt(A*B)>CN_MAP_RESOLUTION) {
-			new_i=map->fit2grid((map->get_i(node11)+map->get_i(node12))/2);
-			new_j=map->fit2grid((map->get_j(node11)+map->get_j(node12))/2);
-			Vector2D newNodePos(new_i,new_j),node12Pos(map->get_i(node12),map->get_j(node12));
-			Vector2D temp(newNodePos-node12Pos);
-			if (sqrt(temp*temp)-CN_EPSILON<config.agent_size*2) // if new node is less than 2 agentsize, than skip
-				new_id=-1;
-			else
-				new_id=map->add_node(new_i, new_j, node11, node12,conflict.agent1);
-			if (new_id!=-1){
+	
+	double r(config.agent_size);
+	int new_id;
+	Vector2D New;
+	if (node11==node12){
+		double i0(map->get_i(node21)),j0(map->get_j(node21));
+		double i1(map->get_i(node22)),j1(map->get_j(node22));
+		double i2(map->get_i(node11)),j2(map->get_j(node11));
+		// take care non waiting edge
+		Vector2D P0(i0,j0),P1(i1,j1),P2(i2,j2);
+		Vector2D temp(P1-P0);
+		Vector2D v(temp/sqrt(temp*temp));
+		double A(v*v),B(2*(i0*v.i-i2*v.i+j0*v.j-j2*v.j)),C((i2-i0)*(i2-i0)+(j2-j0)*(j2-j0)-4.41*r);
+		double t=(-B-sqrt(B*B-4*A*C))/(2*A);
+		if (t>-config.precision){
+			New=(map->fit2grid(i0+v.i*t),map->fit2grid(j0+v.j*t)); 
+			new_id=map->add_node(New.i,New.j, node21, node22,conflict.agent2);
+			if (new_id!=1) {
+				retval.second=Map_delta(new_id,{node21,node22}); 
+				h_values.add_node(new_id,conflict.agent2,node22);
+				cout<<" &&&:"<<new_id<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent2;
+			}
+		}
+			
+		//take care waiting node
+		int prev_node;
+		for (sNode n: paths[conflict.agent1].nodes){
+			if (n.g>=conflict.move1.t1-config.precision)
+				break;
+			prev_node=n.id;
+		}
+		//prev_node->node11
+	}
+	else if (node21==node22){
+		double i0(map->get_i(node11)),j0(map->get_j(node11));
+		double i1(map->get_i(node12)),j1(map->get_j(node12));
+		double i2(map->get_i(node21)),j2(map->get_j(node21));
+		// take care non waiting edge
+		Vector2D P0(i0,j0),P1(i1,j1),P2(i2,j2);
+		Vector2D temp(P1-P0);
+		Vector2D v(temp/sqrt(temp*temp));
+		double A(v*v),B(2*(i0*v.i-i2*v.i+j0*v.j-j2*v.j)),C((i2-i0)*(i2-i0)+(j2-j0)*(j2-j0)-4.41*r);
+		double t=(-B-sqrt(B*B-4*A*C))/(2*A);
+		if (t>-config.precision){
+			New=(map->fit2grid(i0+v.i*t),map->fit2grid(j0+v.j*t)); 
+			new_id=map->add_node(New.i,New.j, node11, node12,conflict.agent1);
+			if (new_id!=1) {
 				retval.first=Map_delta(new_id,{node11,node12}); 
 				h_values.add_node(new_id,conflict.agent1,node12);
-				//cout<<new_id<<"@("<<new_i<<","<<new_j<<") a:"<<conflict.agent1;
-				//new_nodes.i=new_id;
+				cout<<" &&&:"<<new_id<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent1;
 			}
-			//}
 		}
-		if(node21 !=node22){
-			A = Vector2D(map->get_i(node21),map->get_j(node21));
-			B = Vector2D(map->get_i(node22),map->get_j(node22));
-			//if (sqrt(A*B)>CN_MAP_RESOLUTION) {
-			new_i=map->fit2grid((map->get_i(node21)+map->get_i(node22))/2);
-			new_j=map->fit2grid((map->get_j(node21)+map->get_j(node22))/2);
-			
-			Vector2D newNodePos(new_i,new_j),node22Pos(map->get_i(node22),map->get_j(node22));
-			Vector2D temp(newNodePos-node22Pos);
-			if (sqrt(temp*temp)-CN_EPSILON<config.agent_size*2) // if new node is less than 2 agentsize, than skip
-				new_id=-1;
-			else
-				new_id=map->add_node(new_i, new_j, node21, node22,conflict.agent2);
-			if (new_id!=-1){
-				retval.second=Map_delta(new_id,{node21,node22}); 
-				h_values.add_node(new_id,conflict.agent1,node12);
-				//cout<<" &&&:"<<new_id<<"@("<<new_i<<","<<new_j<<") a:"<<conflict.agent2;
-				//new_nodes.j=new_id;
-			}
-			//}
-		}
+		//take care waiting node
 	}
-	
-	else if(node12 != node22 and node11 != node21){//edge conflict
-	
-		double r(config.agent_size);
+	else{
 		double i0(map->get_i(node11)),j0(map->get_j(node11));
 		double i1(map->get_i(node12)),j1(map->get_j(node12));
 		double i2(map->get_i(node21)),j2(map->get_j(node21));
@@ -1031,93 +1035,54 @@ CBS::Map_delta_pair CBS::split_edge(Conflict conflict){
 		
 		double a0(j0-j1), b0(i1-i0), c0(i0*j1-i1*j0); //define the line
 		double a1(j2-j3), b1(i3-i2), c1(i2*j3-i3*j2);
+		if (b0==0 && b1==0){ //two vertical line
+			return retval;
+		}
+		Vector2D Q((b0*c1-b1*c0)/(a0*b1-a1*b0) , (c0*a1-c1*a0)/(a0*b1-a1*b0)); //define intersection point
 		double m0(-1*a0/b0),m1(-1*a1/b1);
+		double theta;
+		if (abs(abs(m0)-abs(m1))<config.precision){
+			return retval;
+		}
 		
+		if (b0==0){
+			theta=M_PI/2-atan(abs(m1));
+		}
+		else if (b1==0){
+			theta=M_PI/2-atan(abs(m0));
+		}
+		else{
+			theta=atan(abs((m1-m0)/(1+m0*m1)));		
+		}
+
 		Vector2D P0(i0,j0),P1(i1,j1),P2(i2,j2),P3(i3,j3);
 		Vector2D temp(P1-P0);
 		Vector2D V0(temp/sqrt(temp*temp)); //define unit dir vec
 		temp= P3-P2;
 		Vector2D V1(temp/sqrt(temp*temp));
-		
-		Vector2D Q((b0*c1-b1*c0)/(a0*b1-a1*b0) , (c0*a1-c1*a0)/(a0*b1-a1*b0)); //define intersection point and angle
-		double theta(atan(abs((m1-m0)/(1+m0*m1))));
-		
-		double d(2*r/sin(theta));//define waiting point
+		double d(2.1*r/sin(theta));//define waiting point
 		Vector2D new_node1(Q-V0*d);
 		Vector2D new_node2(Q-V1*d);
+		cout<<"new node location:";
 		
-	    /*
-		double startTimeA(conflict.move1.t1), endTimeA(conflict.move1.t2), startTimeB(conflict.move2.t1), endTimeB(conflict.move2.t2);
-		double m1i1(map->get_i(conflict.move1.id1)), m1i2(map->get_i(conflict.move1.id2)), m1j1(map->get_j(conflict.move1.id1)), m1j2(map->get_j(conflict.move1.id2));
-		double m2i1(map->get_i(conflict.move2.id1)), m2i2(map->get_i(conflict.move2.id2)), m2j1(map->get_j(conflict.move2.id1)), m2j2(map->get_j(conflict.move2.id2));
-		Vector2D A(m1i1, m1j1);
-		Vector2D B(m2i1, m2j1);
-		Vector2D VA((m1i2 - m1i1)/(conflict.move1.t2 - conflict.move1.t1), (m1j2 - m1j1)/(conflict.move1.t2 - conflict.move1.t1));
-		Vector2D VB((m2i2 - m2i1)/(conflict.move2.t2 - conflict.move2.t1), (m2j2 - m2j1)/(conflict.move2.t2 - conflict.move2.t1));
-		if(startTimeB > startTimeA)
-		{
-			A += VA*(startTimeB-startTimeA);
-			startTimeA = startTimeB;
-		}
-		else if(startTimeB < startTimeA)
-		{
-			B += VB*(startTimeA - startTimeB);
-			startTimeB = startTimeA;
-		}
-		double r(2*config.agent_size);
-		Vector2D w(B - A);
-		double c(w*w - r*r);  
-		Vector2D v(VA - VB);
-		double a(v*v);
-		double b(w*v);
-		double dscr(b*b - a*c); //dont understand
-		double ctime = (b - sqrt(dscr))/a;
-		double norm_coef1=sqrt(VA*VA);
-		double norm_coef2=sqrt(VB*VB);
-		//Vector2D delta(CN_RESOLUTION,CN_RESOLUTION);
-		//Vector2D new_node1=A+VA*(ctime-(2*config.agent_size+CN_RESOLUTION)/norm_coef1);
-		//Vector2D new_node2=B+VB*(ctime-(2*config.agent_size+CN_RESOLUTION)/norm_coef2);
-		Vector2D new_node1=A+VA*(ctime-(CN_RESOLUTION)/norm_coef1);
-		Vector2D new_node2=B+VB*(ctime-(CN_RESOLUTION)/norm_coef2);
-		*/
 		
-		//cout<<"edge:";
-		int new_id;
-		//Vector2D A_dis,temp;
-		if (node11!=node12){
-			//A_dis=Vector2D(new_node1.i),new_node1.j));
-			//temp=Vector2D(map->get_i(node11),map->get_j(node11));
-			//if (A_dis*temp>CN_MAP_RESOLUTION) {
-			Vector2D X1(map->get_i(node21),map->get_j(node21)),X2(map->get_i(node22),map->get_j(node22)),New(map->fit2grid(new_node1.i),map->fit2grid(new_node1.j));
-			if (validNewNode(X1,X2,New)){
-				new_id=map->add_node(New.i,New.j, node11, node12,conflict.agent1);
-				if (new_id!=-1) {
-					retval.first=Map_delta(new_id,{node11,node12}); 
-					h_values.add_node(new_id,conflict.agent1,node12);
-					//cout<<new_id<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent1;
-					//new_nodes.i=new_id;
-				}
-			}
-			//}
+		New=(map->fit2grid(new_node1.i),map->fit2grid(new_node1.j));
+		new_id=map->add_node(New.i,New.j, node11, node12,conflict.agent1);
+		if (new_id!=-1) {
+			retval.first=Map_delta(new_id,{node11,node12}); 
+			h_values.add_node(new_id,conflict.agent1,node12);
+			cout<<new_id<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent1;
 		}
-		if (node21!=node22){
-			//A_dis=Vector2D(map->fit2grid(new_node2.i),map->fit2grid(new_node2.j));
-			//temp=Vector2D(map->get_i(node21),map->get_j(node21));
-			//if (A_dis*temp>CN_MAP_RESOLUTION) {
-			Vector2D X1(map->get_i(node11),map->get_j(node11)),X2(map->get_i(node12),map->get_j(node12)),New(map->fit2grid(new_node2.i),map->fit2grid(new_node2.j));
-			if (validNewNode(X1,X2,New)){
-				new_id=map->add_node(New.i,New.j, node21, node22,conflict.agent2);
-				if (new_id!=1) {
-					retval.second=Map_delta(new_id,{node21,node22}); 
-					h_values.add_node(new_id,conflict.agent2,node22);
-					//cout<<" &&&:"<<new_id<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent2;
-					//new_nodes.j=new_id;
-				}
-			}
-			//}
+
+		New=(map->fit2grid(new_node2.i),map->fit2grid(new_node2.j));
+		new_id=map->add_node(New.i,New.j, node21, node22,conflict.agent2);
+		if (new_id!=1) {
+			retval.second=Map_delta(new_id,{node21,node22}); 
+			h_values.add_node(new_id,conflict.agent2,node22);
+			cout<<" &&&:"<<new_id<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent2;
 		}
 	}
-	//cout<<endl;
+	cout<<endl;
 	return retval;
 }
 

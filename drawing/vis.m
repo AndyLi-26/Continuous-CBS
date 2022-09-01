@@ -30,11 +30,11 @@ tasks=readmatrix('tasks.csv');
 a=dir(['paths\*.csv']);
 agents=length(extractfield(a,"name"));
 colors=jet(agents+1);
-for i=1:agents+1
+for i=1:agents
     plot(nodes(tasks(i,1)+1,1),nodes(tasks(i,1)+1,2),'.',MarkerFaceColor=colors(i,:),MarkerSize=10);
     text(nodes(tasks(i,1)+1,1),nodes(tasks(i,1)+1,2),num2str(i),'Color','black','FontSize',9)
 end
-for i=1:agents+1
+for i=1:agents
     plot(nodes(tasks(i,2)+1,1),nodes(tasks(i,2)+1,2),'p',MarkerFaceColor=colors(i,:),MarkerSize=10);
 end
 f = getframe(gcf);

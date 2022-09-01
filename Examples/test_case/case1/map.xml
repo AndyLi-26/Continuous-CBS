@@ -4,16 +4,16 @@
   <key id="key1" for="edge" attr.name="weight" attr.type="double" />
   <graph id="G" edgedefault="directed" parse.nodeids="free" parse.edgeids="canonical" parse.order="nodesfirst">
     <node id="n0">
-      <data key="key0">100,100</data>
+      <data key="key0">8.7868,91.2132</data>
     </node>
     <node id="n1">
-      <data key="key0">200,100</data>
+      <data key="key0">30,40</data>
     </node>
     <node id="n2">
-      <data key="key0">200,200</data>
+      <data key="key0">51.2132,48.7868</data>
     </node>
     <node id="n3">
-      <data key="key0">100,200</data>
+      <data key="key0">30,100</data>
     </node>
     <edge id="e0" source="n1" target="n3">
       <data key="key1">1</data>

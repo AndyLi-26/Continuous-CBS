@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<root>
+    <agent start_id="1" goal_id="3"/>
+    <agent start_id="0" goal_id="4"/>
+    <log>
+        <summary time="0.0084329999999999995" flowtime="153.94280617542921" makespan="81.62188664869754"/>
+        <agent number="0">
+            <path duration="81.62188664869754">
+                <section number="0" start_i="23" start_j="10" goal_i="18.800000000000001" goal_j="28.5" duration="18.970766985021982"/>
+                <section number="1" start_i="18.800000000000001" start_j="28.5" goal_i="18.800000000000001" goal_j="28.5" duration="8.9999732656717271"/>
+                <section number="2" start_i="18.800000000000001" start_j="28.5" goal_i="18.199999999999999" goal_j="31.100000000000001" duration="2.6683328128252697"/>
+                <section number="3" start_i="18.199999999999999" start_j="31.100000000000001" goal_i="18.199999999999999" goal_j="31.100000000000001" duration="0.30085069813184262"/>
+                <section number="4" start_i="18.199999999999999" start_j="31.100000000000001" goal_i="14" goal_j="50" duration="19.361043360315062"/>
+                <section number="5" start_i="14" start_j="50" goal_i="5" goal_j="80" duration="31.320919526731657"/>
+            </path>
+        </agent>
+        <agent number="1">
+            <path duration="72.320919526731643">
+                <section number="0" start_i="5" start_j="10" goal_i="14" goal_j="50" duration="41"/>
+                <section number="1" start_i="14" start_j="50" goal_i="23" goal_j="80" duration="31.320919526731643"/>
+            </path>
+        </agent>
+    </log>
+</root>
