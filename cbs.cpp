@@ -1004,7 +1004,20 @@ CBS::Map_delta_pair CBS::split_edge(Conflict conflict, std::vector<sPath> paths)
 				break;
 			prev_node=n.id;
 		}
-		//prev_node->node11
+		//prev_node->node11 
+		double prevNodei0(map->get_i(prev_node)),prevNodej0(map->get_j(prev_node));
+		Vector2D prevNode(prevNodei0,prevNodej0);
+		temp=P2-prev;
+		v=temp/sqrt(temp*temp);
+		Vector2D d(2.1*r*v);
+		Vector2D new_node(P2-d);
+		New=(map->fit2grid(new_node.i),map->fit2grid(new_node.j));
+		if (new_id!=1) {
+			retval.first=Map_delta(new_id,{prev_node,node11}); 
+			h_values.add_node(new_id,conflict.agent1,node11);
+			cout<<" &&&:"<<new_id<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent1;
+		}
+		
 	}
 	else if (node21==node22){
 		double i0(map->get_i(node11)),j0(map->get_j(node11));
