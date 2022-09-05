@@ -40,7 +40,7 @@ int main(int argc, const char *argv[])
 		std::cout<<"introduce new node: "<<map.get_new_node_num()<<std::endl;
         logger.get_log(argv[2]);
         logger.write_to_log_summary(solution);
-		logger.txt_writer(solution,config,map.get_new_node_num());
+		logger.txt_writer(solution,config,map.get_new_node_num(), argv[2]);
         logger.write_to_log_path(solution, map);
         logger.save_log();
     }

@@ -280,6 +280,8 @@ int CBS::id2ind(int v1, int v2,int agent)
 		if (temp_moves[i].id==v2)
 			return i;
 	}
+	//cout<<"trying get from: "<<v1<<"->"<<v2<<"for a:"<<agent<<endl;
+	//map->prt_validmoves();
 	return -2;
 }
 
@@ -340,11 +342,11 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
         parent->conflicts.clear();
         parent->cardinal_conflicts.clear();
         parent->semicard_conflicts.clear();
-		cout<<"###   "<<node.id<<"   #####################################"<<endl;
+		//cout<<"###   "<<node.id<<"   #####################################"<<endl;
 		//cout<<"###"<<endl;
 		//cout<<node.id<<endl;
 		auto paths = get_paths(&node, task.get_agents_size());
-		prt_paths(paths);
+		//prt_paths(paths);
 		//cout<<flush;
 		//prt_conflicts(parent->conflicts);
 		//cout<<"------------------"<<endl;
@@ -354,8 +356,8 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
         auto semicard_conflicts = node.semicard_conflicts;
         if(conflicts.empty() && semicard_conflicts.empty() && cardinal_conflicts.empty())
         {
-			string file="CT_tree.dot";
-			saveCT(file,&node,task.get_agents_size());
+			//string file="CT_tree.dot";
+			//saveCT(file,&node,task.get_agents_size());
             break; //i.e. no conflicts => solution found
         }
         if(!cardinal_conflicts.empty())
@@ -373,10 +375,10 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
 		
 		//parent->cur_conflict=conflict; //del when experiment
 		Map_delta_pair info;
-		prt_conflict(conflict);
+		//prt_conflict(conflict);
 		if(config.use_edge_split)
 			info=split_edge(conflict, paths);
-		prt_map_delta_pair(info);
+		//prt_map_delta_pair(info);
 		
         time_spent = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::high_resolution_clock::now() - time_now);
         time += time_spent.count();
@@ -387,7 +389,10 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
 		Constraint constraintA;
 		//prt_constraints(constraintsA);
 		//cout<<"+"<<endl;
-		if (config.use_edge_split && info.first.add_node!=-1){
+		if (config.use_edge_split)
+			gen_new_map(&node);
+		
+		if (config.use_edge_split && info.first.add_node!=-1 && conflict.move1.id1!=conflict.move1.id2){
 			//cout<<"move1: ";
 			//prt_move(conflict.move1);
 			Move temp_move=modify_move(conflict.move1,info.first.add_node);
@@ -400,17 +405,16 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
 			constraintA = get_constraint(conflict.agent1, conflict.move1, conflict.move2);
 			constraintsA.push_back(constraintA);
 		}
-		cout<<"new constraintA:  ";
-		prt_constraint(constraintA);
+		//cout<<"new constraintA:  ";
+		//prt_constraint(constraintA);
 		//cout<<"||"<<endl;
 		//prt_constraints(constraintsA);
 		//cout<<"----"<<endl;
 		
 		//cout<<"original"<<endl;
-		map.prt_validmoves();
+		//map.prt_validmoves();
 		
-		if (config.use_edge_split)
-			gen_new_map(&node);
+
 		
 		//cout<<"curNode"<<endl;
 		//map.prt_validmoves();
@@ -436,7 +440,7 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
 		//prt_constraints(constraintsB);
 		//cout<<"+"<<endl;
 
-		if (config.use_edge_split && info.second.add_node!=-1){
+		if (config.use_edge_split && info.second.add_node!=-1 && conflict.move2.id1!=conflict.move2.id2){
 			//cout<<"move2: ";
 			//prt_move(conflict.move2);
 			Move temp_move=modify_move(conflict.move2,info.second.add_node);
@@ -453,8 +457,8 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
 			//prt_move(conflict.move1);
 			constraintsB.push_back(constraintB);
 		}
-		cout<<"new constraintB:  ";
-		prt_constraint(constraintB);
+		//cout<<"new constraintB:  ";
+		//prt_constraint(constraintB);
 		//cout<<"||"<<endl;
 		//prt_constraints(constraintsB);
 		//cout<<"----"<<endl;
@@ -558,14 +562,14 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
         left.id = id++;
 		//cout<<node.id<<"->"<<right.id<<endl;
 		//cout<<node.id<<"->"<<left.id<<endl;
-		
-		if (left.id>=35){
+		/*
+		if (left.id>=200){
 			//string file="CT_tree_no_sol.dot";
 			//saveCT(file,&node,task.get_agents_size());
 			//printBT("", dummy_start, false);
 			assert(false);
 		}
-		
+		*/
 		
         if(right_ok && pathA.cost > 0 && validate_constraints(constraintsA, pathA.agentID))
         {
@@ -976,7 +980,7 @@ CBS::Map_delta_pair CBS::split_edge(Conflict conflict, std::vector<sPath> paths)
 	
 	double r(config.agent_size);
 	Vector2D New;
-	cout<<"new node location:";
+	//cout<<"new node location:";
 	if (node11==node12){
 		double i0(map->get_i(node21)),j0(map->get_j(node21));
 		double i1(map->get_i(node22)),j1(map->get_j(node22));
@@ -993,7 +997,7 @@ CBS::Map_delta_pair CBS::split_edge(Conflict conflict, std::vector<sPath> paths)
 			if (new_idB!=-1){
 				retval.second=Map_delta(new_idB,{node21,node22}); 
 				h_values.add_node(new_idB,conflict.agent2,node22);
-				cout<<" &&&:"<<new_idB<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent2;
+				//cout<<" &&&:"<<new_idB<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent2;
 			}
 		}
 			
@@ -1017,7 +1021,7 @@ CBS::Map_delta_pair CBS::split_edge(Conflict conflict, std::vector<sPath> paths)
 		if (new_idA!=-1) {
 			retval.first=Map_delta(new_idA,{prev_node,node11}); 
 			h_values.add_node(new_idA,conflict.agent1,node11);
-			cout<<" &&&:"<<new_idA<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent1;
+			//cout<<" &&&:"<<new_idA<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent1;
 		}
 		
 	}
@@ -1034,10 +1038,10 @@ CBS::Map_delta_pair CBS::split_edge(Conflict conflict, std::vector<sPath> paths)
 		if (t>-config.precision){
 			New=Vector2D(map->fit2grid(i0+v.i*t),map->fit2grid(j0+v.j*t)); 
 			int new_idA(map->add_node(New.i,New.j, node11, node12,conflict.agent1));
-			if (new_idA!=1) {
+			if (new_idA!=-1) {
 				retval.first=Map_delta(new_idA,{node11,node12}); 
 				h_values.add_node(new_idA,conflict.agent1,node12);
-				cout<<" &&&:"<<new_idA<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent1;
+				//cout<<" &&&:"<<new_idA<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent1;
 			}
 		}
 			
@@ -1058,10 +1062,10 @@ CBS::Map_delta_pair CBS::split_edge(Conflict conflict, std::vector<sPath> paths)
 		Vector2D new_node(P2-d);
 		New=Vector2D(map->fit2grid(new_node.i),map->fit2grid(new_node.j));
 		int new_idB(map->add_node(New.i,New.j, prev_node, node21,conflict.agent2));
-		if (new_idB!=1) {
+		if (new_idB!=-1) {
 			retval.second=Map_delta(new_idB,{prev_node,node21}); 
 			h_values.add_node(new_idB,conflict.agent2,node21);
-			cout<<" &&&:"<<new_idB<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent2;
+			//cout<<" &&&:"<<new_idB<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent2;
 		}
 	}
 	else{
@@ -1108,18 +1112,18 @@ CBS::Map_delta_pair CBS::split_edge(Conflict conflict, std::vector<sPath> paths)
 		if (new_idA!=-1) {
 			retval.first=Map_delta(new_idA,{node11,node12}); 
 			h_values.add_node(new_idA,conflict.agent1,node12);
-			cout<<new_idA<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent1;
+			//cout<<new_idA<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent1;
 		}
 
 		New=Vector2D(map->fit2grid(new_node2.i),map->fit2grid(new_node2.j));
 		int new_idB(map->add_node(New.i,New.j, node21, node22,conflict.agent2));
-		if (new_idB!=1) {
+		if (new_idB!=-1) {
 			retval.second=Map_delta(new_idB,{node21,node22}); 
 			h_values.add_node(new_idB,conflict.agent2,node22);
-			cout<<" &&&:"<<new_idB<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent2;
+			//cout<<" &&&:"<<new_idB<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent2;
 		}
 	}
-	cout<<endl;
+	//cout<<endl;
 	return retval;
 }
 
