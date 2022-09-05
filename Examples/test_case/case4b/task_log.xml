@@ -3,15 +3,14 @@
     <agent start_id="1" goal_id="3"/>
     <agent start_id="0" goal_id="4"/>
     <log>
-        <summary time="0.0084329999999999995" flowtime="153.94280617542921" makespan="81.62188664869754"/>
+        <summary time="0.0052988000000000002" flowtime="178.44967302716287" makespan="106.12875350043123"/>
         <agent number="0">
-            <path duration="81.62188664869754">
-                <section number="0" start_i="23" start_j="10" goal_i="18.800000000000001" goal_j="28.5" duration="18.970766985021982"/>
-                <section number="1" start_i="18.800000000000001" start_j="28.5" goal_i="18.800000000000001" goal_j="28.5" duration="8.9999732656717271"/>
-                <section number="2" start_i="18.800000000000001" start_j="28.5" goal_i="18.199999999999999" goal_j="31.100000000000001" duration="2.6683328128252697"/>
-                <section number="3" start_i="18.199999999999999" start_j="31.100000000000001" goal_i="18.199999999999999" goal_j="31.100000000000001" duration="0.30085069813184262"/>
-                <section number="4" start_i="18.199999999999999" start_j="31.100000000000001" goal_i="14" goal_j="50" duration="19.361043360315062"/>
-                <section number="5" start_i="14" start_j="50" goal_i="5" goal_j="80" duration="31.320919526731657"/>
+            <path duration="106.12875350043123">
+                <section number="0" start_i="23" start_j="10" goal_i="23" goal_j="10" duration="9.0000000465661305"/>
+                <section number="1" start_i="23" start_j="10" goal_i="31.200000000000003" goal_j="0" duration="12.932130528261771"/>
+                <section number="2" start_i="31.200000000000003" start_j="0" goal_i="31.200000000000003" goal_j="0" duration="9.3856442617834546e-08"/>
+                <section number="3" start_i="31.200000000000003" start_j="0" goal_i="14" goal_j="50" duration="52.875703305015243"/>
+                <section number="4" start_i="14" start_j="50" goal_i="5" goal_j="80" duration="31.320919526731643"/>
             </path>
         </agent>
         <agent number="1">

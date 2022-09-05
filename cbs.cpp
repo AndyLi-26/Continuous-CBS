@@ -376,7 +376,7 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
 		prt_conflict(conflict);
 		if(config.use_edge_split)
 			info=split_edge(conflict, paths);
-		//prt_map_delta_pair(info);
+		prt_map_delta_pair(info);
 		
         time_spent = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::high_resolution_clock::now() - time_now);
         time += time_spent.count();
@@ -977,6 +977,7 @@ CBS::Map_delta_pair CBS::split_edge(Conflict conflict, std::vector<sPath> paths)
 	double r(config.agent_size);
 	int new_id;
 	Vector2D New;
+	cout<<"new node location:";
 	if (node11==node12){
 		double i0(map->get_i(node21)),j0(map->get_j(node21));
 		double i1(map->get_i(node22)),j1(map->get_j(node22));
@@ -1004,14 +1005,14 @@ CBS::Map_delta_pair CBS::split_edge(Conflict conflict, std::vector<sPath> paths)
 				break;
 			prev_node=n.id;
 		}
-		//prev_node->node11 
 		double prevNodei0(map->get_i(prev_node)),prevNodej0(map->get_j(prev_node));
 		Vector2D prevNode(prevNodei0,prevNodej0);
-		temp=P2-prev;
+		temp=P2-prevNode;
 		v=temp/sqrt(temp*temp);
-		Vector2D d(2.1*r*v);
+		Vector2D d(v*2.1*r);
 		Vector2D new_node(P2-d);
 		New=(map->fit2grid(new_node.i),map->fit2grid(new_node.j));
+		new_id=map->add_node(New.i,New.j, prev_node, node11,conflict.agent1);
 		if (new_id!=1) {
 			retval.first=Map_delta(new_id,{prev_node,node11}); 
 			h_values.add_node(new_id,conflict.agent1,node11);
@@ -1038,7 +1039,27 @@ CBS::Map_delta_pair CBS::split_edge(Conflict conflict, std::vector<sPath> paths)
 				cout<<" &&&:"<<new_id<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent1;
 			}
 		}
+			
 		//take care waiting node
+		int prev_node;
+		for (sNode n: paths[conflict.agent2].nodes){
+			if (n.g>=conflict.move2.t1-config.precision)
+				break;
+			prev_node=n.id;
+		}
+		double prevNodei0(map->get_i(prev_node)),prevNodej0(map->get_j(prev_node));
+		Vector2D prevNode(prevNodei0,prevNodej0);
+		temp=P2-prevNode;
+		v=temp/sqrt(temp*temp);
+		Vector2D d(v*2.1*r);
+		Vector2D new_node(P2-d);
+		New=(map->fit2grid(new_node.i),map->fit2grid(new_node.j));
+		new_id=map->add_node(New.i,New.j, prev_node, node21,conflict.agent2);
+		if (new_id!=1) {
+			retval.second=Map_delta(new_id,{prev_node,node21}); 
+			h_values.add_node(new_id,conflict.agent2,node21);
+			cout<<" &&&:"<<new_id<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent2;
+		}
 	}
 	else{
 		double i0(map->get_i(node11)),j0(map->get_j(node11));
@@ -1076,7 +1097,7 @@ CBS::Map_delta_pair CBS::split_edge(Conflict conflict, std::vector<sPath> paths)
 		double d(2.1*r/sin(theta));//define waiting point
 		Vector2D new_node1(Q-V0*d);
 		Vector2D new_node2(Q-V1*d);
-		cout<<"new node location:";
+		
 		
 		
 		New=(map->fit2grid(new_node1.i),map->fit2grid(new_node1.j));
