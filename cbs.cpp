@@ -989,7 +989,7 @@ CBS::Map_delta_pair CBS::split_edge(Conflict conflict, std::vector<sPath> paths)
 		double A(v*v),B(2*(i0*v.i-i2*v.i+j0*v.j-j2*v.j)),C((i2-i0)*(i2-i0)+(j2-j0)*(j2-j0)-4.41*r);
 		double t=(-B-sqrt(B*B-4*A*C))/(2*A);
 		if (t>-config.precision){
-			New=(map->fit2grid(i0+v.i*t),map->fit2grid(j0+v.j*t)); 
+			New=Vector2D(map->fit2grid(i0+v.i*t),map->fit2grid(j0+v.j*t)); 
 			new_id=map->add_node(New.i,New.j, node21, node22,conflict.agent2);
 			if (new_id!=1) {
 				retval.second=Map_delta(new_id,{node21,node22}); 
@@ -1005,13 +1005,15 @@ CBS::Map_delta_pair CBS::split_edge(Conflict conflict, std::vector<sPath> paths)
 				break;
 			prev_node=n.id;
 		}
+		if (prev_node==node11)
+			return retval;
 		double prevNodei0(map->get_i(prev_node)),prevNodej0(map->get_j(prev_node));
 		Vector2D prevNode(prevNodei0,prevNodej0);
 		temp=P2-prevNode;
 		v=temp/sqrt(temp*temp);
 		Vector2D d(v*2.1*r);
 		Vector2D new_node(P2-d);
-		New=(map->fit2grid(new_node.i),map->fit2grid(new_node.j));
+		New=Vector2D(map->fit2grid(new_node.i),map->fit2grid(new_node.j));
 		new_id=map->add_node(New.i,New.j, prev_node, node11,conflict.agent1);
 		if (new_id!=1) {
 			retval.first=Map_delta(new_id,{prev_node,node11}); 
@@ -1031,7 +1033,7 @@ CBS::Map_delta_pair CBS::split_edge(Conflict conflict, std::vector<sPath> paths)
 		double A(v*v),B(2*(i0*v.i-i2*v.i+j0*v.j-j2*v.j)),C((i2-i0)*(i2-i0)+(j2-j0)*(j2-j0)-4.41*r);
 		double t=(-B-sqrt(B*B-4*A*C))/(2*A);
 		if (t>-config.precision){
-			New=(map->fit2grid(i0+v.i*t),map->fit2grid(j0+v.j*t)); 
+			New=Vector2D(map->fit2grid(i0+v.i*t),map->fit2grid(j0+v.j*t)); 
 			new_id=map->add_node(New.i,New.j, node11, node12,conflict.agent1);
 			if (new_id!=1) {
 				retval.first=Map_delta(new_id,{node11,node12}); 
@@ -1047,13 +1049,15 @@ CBS::Map_delta_pair CBS::split_edge(Conflict conflict, std::vector<sPath> paths)
 				break;
 			prev_node=n.id;
 		}
+		if (prev_node==node21)
+			return retval;
 		double prevNodei0(map->get_i(prev_node)),prevNodej0(map->get_j(prev_node));
 		Vector2D prevNode(prevNodei0,prevNodej0);
 		temp=P2-prevNode;
 		v=temp/sqrt(temp*temp);
 		Vector2D d(v*2.1*r);
 		Vector2D new_node(P2-d);
-		New=(map->fit2grid(new_node.i),map->fit2grid(new_node.j));
+		New=Vector2D(map->fit2grid(new_node.i),map->fit2grid(new_node.j));
 		new_id=map->add_node(New.i,New.j, prev_node, node21,conflict.agent2);
 		if (new_id!=1) {
 			retval.second=Map_delta(new_id,{prev_node,node21}); 
@@ -1100,7 +1104,7 @@ CBS::Map_delta_pair CBS::split_edge(Conflict conflict, std::vector<sPath> paths)
 		
 		
 		
-		New=(map->fit2grid(new_node1.i),map->fit2grid(new_node1.j));
+		New=Vector2D(map->fit2grid(new_node1.i),map->fit2grid(new_node1.j));
 		new_id=map->add_node(New.i,New.j, node11, node12,conflict.agent1);
 		if (new_id!=-1) {
 			retval.first=Map_delta(new_id,{node11,node12}); 
@@ -1108,7 +1112,7 @@ CBS::Map_delta_pair CBS::split_edge(Conflict conflict, std::vector<sPath> paths)
 			cout<<new_id<<"@("<<New.i<<","<<New.j<<") a:"<<conflict.agent1;
 		}
 
-		New=(map->fit2grid(new_node2.i),map->fit2grid(new_node2.j));
+		New=Vector2D(map->fit2grid(new_node2.i),map->fit2grid(new_node2.j));
 		new_id=map->add_node(New.i,New.j, node21, node22,conflict.agent2);
 		if (new_id!=1) {
 			retval.second=Map_delta(new_id,{node21,node22}); 
