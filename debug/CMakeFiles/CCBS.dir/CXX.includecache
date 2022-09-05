@@ -34,10 +34,6 @@ simplex/simplex.h
 simplex/pilal.h
 /mnt/d/study/year5/fyp/code/fyp/simplex/pilal.h
 
-/mnt/d/study/year5/fyp/code/fyp/config.cpp
-config.h
-/mnt/d/study/year5/fyp/code/fyp/config.h
-
 /mnt/d/study/year5/fyp/code/fyp/config.h
 tinyxml2.h
 /mnt/d/study/year5/fyp/code/fyp/tinyxml2.h
@@ -54,10 +50,6 @@ math.h
 
 /mnt/d/study/year5/fyp/code/fyp/const.h
 
-/mnt/d/study/year5/fyp/code/fyp/heuristic.cpp
-heuristic.h
-/mnt/d/study/year5/fyp/code/fyp/heuristic.h
-
 /mnt/d/study/year5/fyp/code/fyp/heuristic.h
 structs.h
 /mnt/d/study/year5/fyp/code/fyp/structs.h
@@ -67,24 +59,6 @@ vector
 -
 unordered_map
 -
-map.h
-/mnt/d/study/year5/fyp/code/fyp/map.h
-
-/mnt/d/study/year5/fyp/code/fyp/main.cpp
-iostream
--
-fstream
--
-map.h
-/mnt/d/study/year5/fyp/code/fyp/map.h
-task.h
-/mnt/d/study/year5/fyp/code/fyp/task.h
-cbs.h
-/mnt/d/study/year5/fyp/code/fyp/cbs.h
-xml_logger.h
-/mnt/d/study/year5/fyp/code/fyp/xml_logger.h
-
-/mnt/d/study/year5/fyp/code/fyp/map.cpp
 map.h
 /mnt/d/study/year5/fyp/code/fyp/map.h
 
@@ -110,25 +84,9 @@ structs.h
 boost/unordered_map.hpp
 -
 
-/mnt/d/study/year5/fyp/code/fyp/simplex/columnset.cpp
-columnset.h
-/mnt/d/study/year5/fyp/code/fyp/simplex/columnset.h
-simplex.h
-/mnt/d/study/year5/fyp/code/fyp/simplex/simplex.h
-algorithm
--
-vector
--
-
 /mnt/d/study/year5/fyp/code/fyp/simplex/columnset.h
 vector
 -
-
-/mnt/d/study/year5/fyp/code/fyp/simplex/constraint.cpp
-constraint.h
-/mnt/d/study/year5/fyp/code/fyp/simplex/constraint.h
-simplex.h
-/mnt/d/study/year5/fyp/code/fyp/simplex/simplex.h
 
 /mnt/d/study/year5/fyp/code/fyp/simplex/constraint.h
 pilal.h
@@ -141,24 +99,6 @@ iostream
 /mnt/d/study/year5/fyp/code/fyp/simplex/divisionbyzeroexception.h
 
 /mnt/d/study/year5/fyp/code/fyp/simplex/indexoutofboundexception.h
-
-/mnt/d/study/year5/fyp/code/fyp/simplex/matrix.cpp
-pilal.h
-/mnt/d/study/year5/fyp/code/fyp/simplex/pilal.h
-utility
--
-iostream
--
-sstream
--
-cstdio
--
-cstdlib
--
-cmath
--
-algorithm
--
 
 /mnt/d/study/year5/fyp/code/fyp/simplex/matrix.h
 pilal.h
@@ -175,12 +115,6 @@ iostream
 /mnt/d/study/year5/fyp/code/fyp/simplex/matrixnotsquareexception.h
 
 /mnt/d/study/year5/fyp/code/fyp/simplex/notavectorexception.h
-
-/mnt/d/study/year5/fyp/code/fyp/simplex/objectivefunction.cpp
-objectivefunction.h
-/mnt/d/study/year5/fyp/code/fyp/simplex/objectivefunction.h
-simplex.h
-/mnt/d/study/year5/fyp/code/fyp/simplex/simplex.h
 
 /mnt/d/study/year5/fyp/code/fyp/simplex/objectivefunction.h
 pilal.h
@@ -206,24 +140,6 @@ matrixissingularexception.h
 notavectorexception.h
 /mnt/d/study/year5/fyp/code/fyp/simplex/notavectorexception.h
 
-/mnt/d/study/year5/fyp/code/fyp/simplex/simplex.cpp
-simplex.h
-/mnt/d/study/year5/fyp/code/fyp/simplex/simplex.h
-variable.h
-/mnt/d/study/year5/fyp/code/fyp/simplex/variable.h
-iostream
--
-fstream
--
-cstdlib
--
-sstream
--
-algorithm
--
-sys/stat.h
-/mnt/d/study/year5/fyp/code/fyp/simplex/sys/stat.h
-
 /mnt/d/study/year5/fyp/code/fyp/simplex/simplex.h
 pilal.h
 /mnt/d/study/year5/fyp/code/fyp/simplex/pilal.h
@@ -247,20 +163,6 @@ datamismatchexception.h
 /mnt/d/study/year5/fyp/code/fyp/simplex/sizemismatchexception.h
 string
 -
-
-/mnt/d/study/year5/fyp/code/fyp/simplex/variable.cpp
-variable.h
-/mnt/d/study/year5/fyp/code/fyp/simplex/variable.h
-
-/mnt/d/study/year5/fyp/code/fyp/simplex/variable.h
-constraint.h
-/mnt/d/study/year5/fyp/code/fyp/simplex/constraint.h
-simplex.h
-/mnt/d/study/year5/fyp/code/fyp/simplex/simplex.h
-
-/mnt/d/study/year5/fyp/code/fyp/sipp.cpp
-sipp.h
-/mnt/d/study/year5/fyp/code/fyp/sipp.h
 
 /mnt/d/study/year5/fyp/code/fyp/sipp.h
 structs.h
@@ -306,10 +208,6 @@ boost/multi_index/member.hpp
 boost/multi_index/composite_key.hpp
 -
 
-/mnt/d/study/year5/fyp/code/fyp/task.cpp
-task.h
-/mnt/d/study/year5/fyp/code/fyp/task.h
-
 /mnt/d/study/year5/fyp/code/fyp/task.h
 iostream
 -
@@ -331,20 +229,6 @@ fstream
 -
 map.h
 /mnt/d/study/year5/fyp/code/fyp/map.h
-
-/mnt/d/study/year5/fyp/code/fyp/tinyxml2.cpp
-tinyxml2.h
-/mnt/d/study/year5/fyp/code/fyp/tinyxml2.h
-new
--
-stddef.h
--
-stdarg.h
--
-cstddef
--
-cstdarg
--
 
 /mnt/d/study/year5/fyp/code/fyp/tinyxml2.h
 ctype.h
@@ -375,28 +259,4 @@ android/log.h
 -
 assert.h
 -
-
-/mnt/d/study/year5/fyp/code/fyp/xml_logger.cpp
-xml_logger.h
-/mnt/d/study/year5/fyp/code/fyp/xml_logger.h
-
-/mnt/d/study/year5/fyp/code/fyp/xml_logger.h
-const.h
-/mnt/d/study/year5/fyp/code/fyp/const.h
-tinyxml2.h
-/mnt/d/study/year5/fyp/code/fyp/tinyxml2.h
-structs.h
-/mnt/d/study/year5/fyp/code/fyp/structs.h
-map.h
-/mnt/d/study/year5/fyp/code/fyp/map.h
-iostream
--
-sstream
--
-string
--
-fstream
--
-config.h
-/mnt/d/study/year5/fyp/code/fyp/config.h
 
