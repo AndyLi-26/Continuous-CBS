@@ -6,7 +6,7 @@ open(obj);
 agent_size=0.5;
 %draw map
 global nodes resolution
-resolution=0.5;
+resolution=0.05;
 nodes=readmatrix('nodes.csv');
 mapSize=[min(nodes,[],'all'),max(nodes,[],'all')];range=mapSize(2)-mapSize(1);
 mapSize=[mapSize(1)-0.01*range,mapSize(2)+0.01*range];

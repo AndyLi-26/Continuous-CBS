@@ -6,5 +6,5 @@ CXX_FLAGS =  -std=c++11 -O2 -Wall -Wextra -ggdb3 -g
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/mnt/d/study/year5/fyp/code/fyp/. 
+CXX_INCLUDES = -I/mnt/d/Desktop/ccbs/Continuous-CBS/. 
 

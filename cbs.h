@@ -51,6 +51,7 @@ public:
 	void prt_paths(std::vector<sPath> paths);
 	void prt_map_delta_pair(Map_delta_pair delta_pair);
 	void saveCT(const string &fileName,CBS_Node *goal_node,unsigned int agent_num);
+	Vector2D ind2Vec(int nodeId);
     CBS_Tree tree;
     SIPP planner;
     Solution solution;
