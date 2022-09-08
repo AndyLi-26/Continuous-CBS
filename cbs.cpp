@@ -20,8 +20,8 @@ bool CBS::init_root(Map &map, const Task &task)
     root.id_str = "1";
     auto conflicts = get_all_conflicts(root.paths, -1);
     root.conflicts_num = conflicts.size();
-	//cout<<"init_path"<<endl;
-	//prt_paths(root.paths);
+	cout<<"init_path"<<endl;
+	prt_paths(root.paths);
     for(auto conflict: conflicts)
         if(!config.use_cardinal)
             root.conflicts.push_back(conflict);
@@ -358,6 +358,10 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
         {
 			//string file="CT_tree.dot";
 			//saveCT(file,&node,task.get_agents_size());
+			prt_paths(paths);
+			if (config.use_edge_split)
+				gen_new_map(&node);
+			map.prt_validmoves();
             break; //i.e. no conflicts => solution found
         }
         if(!cardinal_conflicts.empty())

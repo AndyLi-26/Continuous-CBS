@@ -3,7 +3,7 @@ obj = VideoWriter("sparse_s_1.mp4", 'MPEG-4');
 obj.Quality = 100;
 obj.FrameRate = 20;
 open(obj);
-agent_size=4.5;
+agent_size=0.5;
 %draw map
 global nodes resolution
 resolution=0.5;

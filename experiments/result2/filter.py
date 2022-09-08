@@ -19,6 +19,5 @@ if __name__=="__main__":
             
         with open(i,'w') as f:
            print(*content,sep='\n',file=f) 
-        break
     
     

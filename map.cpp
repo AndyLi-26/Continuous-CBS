@@ -632,7 +632,8 @@ void Map::prt_validmoves() const{
 	//std::cout<<"Map:"<<std::endl;
 	for (int i=0;i<valid_moves.size();++i){
 		auto vecNode=valid_moves[i];
-		std::cout<<"|"<<i<<": ";
+		std::cout<<"|"<<i<<
+		" ("<<nodes[i].i<<","<<nodes[i].j<<") : ";
 		for (Node n:vecNode){
 			std::cout<<n.id<<"(";
 			prt_set(n.agent);

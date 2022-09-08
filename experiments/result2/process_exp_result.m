@@ -1,39 +1,74 @@
 clc; clear;close all;
 files = dir('.\*.csv');
-final_result=zeros(length(files),10);
+%final_result=zeros(length(files),10);
 max_run_time=0;
-for i=1:length(files)
-    %fprintf("name:%s\n",files(i).name)
-    temp=csvread(files(i).name);
-    new_temp=temp(temp(:,4)~=-1,:);
-    failed_num=150-size(new_temp,1);
-    new_temp=new_temp(new_temp(:,3)<300,:);
-    info=split(files(i).name,'-');
-    a_num=regexp(info(2),'\d*','Match');
-    a_num=str2num(a_num{1}{1});
-    e=regexp(info(3),'\d*','Match'); 
-    e=str2num(e{1}{1});
-    a=[a_num,e,size(new_temp,1),mean(new_temp,1)];
-    final_result(i,:)=a;
-    final_result(i,10)=failed_num;
-    tempmax=max(new_temp(:,3));
-    max_run_time=max([max_run_time,tempmax]);
-end
-%final_result=final_result(:,1:end-1);
-title("difference between two algorithm")
-for i =1:5
-    subplot(3,2,i);hold on;
-    title(sprintf("agent size=%.1f",i-0.5))
-    tempData=final_result(final_result(:,4)==(i-0.5),:);
-    %plot split
-    sData=tempData(tempData(:,2)==1,:);
-    sData=sortrows(sData);
-    %plot(sData(:,1),sData(:,7));
-    %plot non-split
-    nonData=tempData(tempData(:,2)==0,:);
-    nonData=sortrows(nonData);
-    plot(nonData(:,1),nonData(:,7)-sData(:,7));
-    plot([5,14],[0,0],'r-')
-    %legend("with edge spllitting","no edge splitting","Location","best");
-    xlabel("agent num");    ylabel("cost");
+m={'sparse';'dense';'super'};
+a_size=[0.5,1.5,2.5,3.5,4.5];
+for i =1:3
+    fh=figure();
+    fh.WindowState = 'maximized';
+    sgtitle(m{i});
+    for j = 1:5
+        datas=zeros(4,500);%agent_num;instance;e0;e1
+        a_num=5:14;
+        for k=1:length(a_num)
+            datas(1,(k-1)*50+1:k*50)=a_num(k)*ones(1,50);
+        end
+        temp=0:49;
+        datas(2,:)=repmat(temp,1,length(a_num));
+        
+        srateVagent0=zeros(1,length(a_num));
+        srateVagent1=zeros(1,length(a_num));
+        costVagent=zeros(1,length(a_num));
+        dcost=zeros(1,length(a_num));
+
+        prefix0=[m{i},'\',num2str(a_size(j)),'\e0\'];
+        prefix1=[m{i},'\',num2str(a_size(j)),'\e1\'];
+        files0 = dir([prefix0,'*.csv']);
+        files1 = dir([prefix1,'*.csv']);
+        for k =1:length(files0)
+            temp=csvread([prefix0,files0(k).name]);
+            temp=sortrows(temp,1);
+            invalid_ind=temp(:,4)>=180;
+            temp(invalid_ind,5)=-1;
+            pos=find(a_num==temp(1,3));
+            datas(3,(pos-1)*50+1:pos*50)=temp(:,5)';
+            srateVagent0(pos)=sum(temp(:,5)~=-1);
+        end
+        
+        for k=1:length(files1)
+            temp=csvread([prefix1,files1(k).name]);
+            temp=sortrows(temp,1);
+            invalid_ind=temp(:,4)>=180;
+            temp(invalid_ind,5)=-1;
+            pos=find(a_num==temp(1,3));
+            datas(4,(pos-1)*50+1:pos*50)=temp(:,5)';
+            srateVagent1(pos)=sum(temp(:,5)~=-1);
+        end
+        cpdatas=datas;
+        subplot(3,5,j); hold on;
+        title(sprintf("sactter agent size=%f",a_size(j)));
+        datas(3,datas(3,:)==-1)=max(datas(3,:))+100;
+        datas(4,datas(4,:)==-1)=max(datas(4,:))+100;
+        plot(datas(3,:),datas(4,:),'ro');
+        plot(datas(3,:),datas(3,:),'b-');
+
+        subplot(3,5,j+5);hold on
+        title(sprintf("success rate",a_size(j)));
+        plot(a_num,srateVagent0);
+        plot(a_num,srateVagent1);
+        legend("without edge splitting","with edge splitting");
+        xlabel("agent num");ylabel("solved instance")
+        
+        subplot(3,5,j+10);hold on
+        title(sprintf("average cost improvements",a_size(j)));
+        cpdatas=cpdatas(:,cpdatas(3,:)~=-1);
+        cpdatas=cpdatas(:,cpdatas(4,:)~=-1);
+        for k=1:length(a_num)
+            temp=cpdatas(:,cpdatas(1,:)==a_num(k));
+            dcost(k)=mean(temp(3,:)-temp(4,:));
+        end
+        plot(a_num,dcost);
+        xlabel("agent num");ylabel("cost")
+    end
 end
