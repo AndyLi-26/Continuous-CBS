@@ -3,14 +3,15 @@
     <agent start_id="1" goal_id="3"/>
     <agent start_id="0" goal_id="4"/>
     <log>
-        <summary time="0.0059925999999999998" flowtime="153.94414629363206" makespan="81.62322676690043"/>
+        <summary time="0.0019873999999999998" flowtime="153.9426465900425" makespan="81.621727063310857"/>
         <agent number="0">
-            <path duration="81.62322676690043">
-                <section number="0" start_i="23" start_j="10" goal_i="23" goal_j="10" duration="9.0000000465661287"/>
-                <section number="1" start_i="23" start_j="10" goal_i="18.199999999999999" goal_j="31.200000000000003" duration="21.736605070709643"/>
-                <section number="2" start_i="18.199999999999999" start_j="31.200000000000003" goal_i="18.199999999999999" goal_j="31.200000000000003" duration="0.30226525404740912"/>
-                <section number="3" start_i="18.199999999999999" start_j="31.200000000000003" goal_i="14" goal_j="50" duration="19.263436868845599"/>
-                <section number="4" start_i="14" start_j="50" goal_i="5" goal_j="80" duration="31.32091952673165"/>
+            <path duration="81.621727063310857">
+                <section number="0" start_i="23" start_j="10" goal_i="18.800000000000001" goal_j="28.5" duration="18.970766985021982"/>
+                <section number="1" start_i="18.800000000000001" start_j="28.5" goal_i="18.800000000000001" goal_j="28.5" duration="9.0004691041420237"/>
+                <section number="2" start_i="18.800000000000001" start_j="28.5" goal_i="18.199999999999999" goal_j="31.100000000000001" duration="2.6683328128252697"/>
+                <section number="3" start_i="18.199999999999999" start_j="31.100000000000001" goal_i="18.199999999999999" goal_j="31.100000000000001" duration="0.30019527427486281"/>
+                <section number="4" start_i="18.199999999999999" start_j="31.100000000000001" goal_i="14" goal_j="50" duration="19.361043360315062"/>
+                <section number="5" start_i="14" start_j="50" goal_i="5" goal_j="80" duration="31.320919526731657"/>
             </path>
         </agent>
         <agent number="1">
