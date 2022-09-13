@@ -566,14 +566,14 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
         left.id = id++;
 		//cout<<node.id<<"->"<<right.id<<endl;
 		//cout<<node.id<<"->"<<left.id<<endl;
-		
+		/*
 		if (left.id>=50){
 			string file="CT_tree_no_sol.dot";
 			saveCT(file,&node,task.get_agents_size());
 			//printBT("", dummy_start, false);
 			assert(false);
 		}
-		
+		*/
 		
         if(right_ok && pathA.cost > 0 && validate_constraints(constraintsA, pathA.agentID))
         {

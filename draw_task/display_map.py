@@ -15,7 +15,6 @@ if __name__=="__main__":
         Vy=set(range(h))
         imgArray=np.ones([h,w,3])*255
         for i,l in enumerate(f):
-            print(i,l)
             for j,c in enumerate(l):
                 if c=='T':
                     imgArray[i,j,:]=[0,0,0]
@@ -36,13 +35,38 @@ if __name__=="__main__":
                 imgArray[info[1],info[0],:]=[0,255,0]
                 imgArray[info[3],info[2],:]=[255,0,0]
     '''
-    
-    
-    
-    
-    
-    
-    
+    Vx=list(Vx)
+	Vy=list(Vy)
+	curNode=[Vx.pop(0)]
+	Vx_index=[]
+	Vy_index=[]
+	while Vx:
+		curIndex=Vx.pop(0)
+		if abs(curIndex-curNode[-1])>1:
+			x=sum(curNode)/len(curNode)
+			Vx_index.append(x)
+			curNode=[curIndex]
+		else:
+			curNode.append(curIndex)
+			
+	if curNode:
+		Vx_index.append(sum(curNode)/len(curNode))
+		
+	curNode=[Vy.pop(0)]		
+	while Vy:
+		curIndex=Vy.pop(0)
+		if abs(curIndex-curNode[-1])>1:
+			y=sum(curNode)/len(curNode)
+			Vy_index.append(y)
+			curNode=[curIndex]
+		else:
+			curNode.append(curIndex)
+			
+	if curNode:
+		Vy_index.append(sum(curNode)/len(curNode))
+	
+	print("Xs:",Vx_index)
+	print("Ys:",Vy_index)
     #display
     print(imgArray.shape)
     imgplot = plt.imshow(imgArray)
