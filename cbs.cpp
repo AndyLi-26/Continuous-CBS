@@ -566,14 +566,14 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
         left.id = id++;
 		//cout<<node.id<<"->"<<right.id<<endl;
 		//cout<<node.id<<"->"<<left.id<<endl;
-		/*
-		if (left.id>=100){
+		
+		if (left.id>=50){
 			string file="CT_tree_no_sol.dot";
 			saveCT(file,&node,task.get_agents_size());
 			//printBT("", dummy_start, false);
 			assert(false);
 		}
-		*/
+		
 		
         if(right_ok && pathA.cost > 0 && validate_constraints(constraintsA, pathA.agentID))
         {
@@ -1232,7 +1232,7 @@ void CBS::saveCT(const string &fileName, CBS_Node *goal_node, unsigned int agent
 	{
 		output << node.id << " [label=\"#" << node.id 
 					<< "\ng+h="<< node.cost-node.h<< "+" << node.h 
-					<< "\nf=" << node.cost << "\n"<<node.cur_conflict<<"\n"
+					<< "\n"<<node.cur_conflict
 					<< node.constraint<<node.positive_constraint
 					<< "new_Node:"<<node.delta.add_node<<"\n";
 		//std::vector<sPath> allp = get_paths((&node), agent_num);

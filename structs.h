@@ -222,8 +222,8 @@ struct Conflict
 		int node12=conflict.move1.id2;
 		int node21=conflict.move2.id1;
 		int node22=conflict.move2.id2;
-		os<<"[a"<<conflict.agent1<<":"<<node11<<"->"<<node12<<"]@["<<conflict.move1.t1<<"~"<<conflict.move1.t2<<"]\n";
-		os<<"[a"<<conflict.agent2<<":"<<node21<<"->"<<node22<<"]@["<<conflict.move2.t1<<"~"<<conflict.move2.t2<<"]\n";
+		os<<"[a"<<conflict.agent1<<":"<<node11<<"->"<<node12<<"]\n@["<<conflict.move1.t1<<"~"<<conflict.move1.t2<<"]\n";
+		os<<"[a"<<conflict.agent2<<":"<<node21<<"->"<<node22<<"]\n @["<<conflict.move2.t1<<"~"<<conflict.move2.t2<<"]\n";
 		return os;
 	}
 };
