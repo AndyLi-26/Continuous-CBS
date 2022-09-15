@@ -54,8 +54,8 @@ public:
 	void prt_ind(node_index n);
 	void prt_set(std::set<int> s) const;
 	void prt_validmoves() const;
-	void alter(Map_delta map_delta);
-	void alter_back(Map_delta map_delta);
+	void alter(Map_deltas map_delta);
+	void alter_back(Map_deltas map_delta);
 	bool equal(Map *m);
 };
 

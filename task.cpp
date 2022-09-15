@@ -75,6 +75,6 @@ Agent Task::get_agent(int id) const
 
 void Task::prt_agents(){
 	for(Agent a:agents){
-		cout<<a.id<<":"<<a.start_id<<"->"<<a.goal_id<<endl;
+		std::cout<<a.id<<":"<<a.start_id<<"->"<<a.goal_id<<std::endl;
 	}
 }

@@ -37,7 +37,7 @@ public:
 	Move modify_move(Move move,int new_id);
 	bool validNewNode(Vector2D X1,Vector2D X2,Vector2D New);
 	//typedef std::pair<Map_delta,Map_delta> Map_delta_pair;
-	void split_edge(Conflict conflict, std::vector<sPath> paths, Map_deltas deltasR, Map_deltas deltasR);
+	void split_edge(Conflict conflict, std::vector<sPath> paths, Map_deltas &deltasR, Map_deltas &deltasL);
 	Constraint get_split_constraint(int agent, Move move1, Move move2);
 	void gen_new_map(CBS_Node *node);
 	void gen_original_map(CBS_Node *node);
@@ -49,7 +49,7 @@ public:
 	void prt_conflicts(list<Conflict> conflicts);
 	void prt_path(sPath p);
 	void prt_paths(std::vector<sPath> paths);
-	void prt_map_delta_pair(Map_delta_pair delta_pair);
+	void prt_map_delta_pair(Map_deltas delta_pair);
 	void saveCT(const string &fileName,CBS_Node *goal_node,unsigned int agent_num);
 	Vector2D ind2Vec(int nodeId);
     CBS_Tree tree;

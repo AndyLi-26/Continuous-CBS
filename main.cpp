@@ -4,7 +4,6 @@
 #include "task.h"
 #include "cbs.h"
 #include "xml_logger.h"
-using namespace std;
 int main(int argc, const char *argv[])
 {
     if(argc > 2)
@@ -12,19 +11,19 @@ int main(int argc, const char *argv[])
         Config config;
         if(argc > 3){
             config.getConfig(argv[3]);
-			cout<<"read config success"<<endl;
+			std::cout<<"read config success"<<endl;
 		}
         Map map = Map(config.agent_size, config.connectdness);
         map.get_map(argv[1]);
-		cout<<"read map success"<<endl;
+		std::cout<<"read map success"<<endl;
         Task task(config.agent_num);
         task.get_task(argv[2]);
-		cout<<"read task success"<<endl;
+		std::cout<<"read task success"<<endl;
         if(map.is_roadmap())
             task.make_ij(map);
         else
             task.make_ids(map.get_width());
-		cout<<"agents_num="<<task.get_agent_num()<<endl;
+		std::cout<<"agents_num="<<task.get_agent_num()<<endl;
 		task.prt_agents();
 		//task.print_task();
         CBS cbs;

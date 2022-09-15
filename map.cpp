@@ -500,7 +500,7 @@ std::vector<Node> Map::get_valid_moves(int id,int agent) const
 	
 	for (int i=0;i<retval.size();++i){
 		if (retval[i].agent.find(-1)==retval[i].agent.end() && retval[i].agent.find(agent)==retval[i].agent.end()){
-		//if (retval[i].agent!=-1 && retval[i].agent!=agent){
+		//if (retval[i].agent!=-1 && retval[i].agent!=agent)
 			/*if (valid_moves[retval[i].id].size()!=2){
 				std::cout<<"id: "<<id<<", agent: "<<agent<<", i:"<<i<<std::endl;
 				prt_validmoves();
@@ -649,58 +649,62 @@ void Map::prt_set(std::set<int> s) const{
 		std::cout<<i<<",";
 }
 
-void Map::alter(Map_delta map_delta){
-	int node_id(map_delta.add_node);
-	
-	if (node_id==-1)
-		return;
-	
-	int v1(map_delta.del_edge.first),v2(map_delta.del_edge.second);
-	
-	for (int i=0;i<valid_moves[v1].size();++i){
-		if (valid_moves[v1][i].id==v2){
-			valid_moves[v1][i].i=get_i(node_id);
-			valid_moves[v1][i].j=get_j(node_id);
-			valid_moves[v1][i].id=node_id;
-			valid_moves[v1][i].agent=nodes[node_id].agent;
-			break;
-		}
-	}
-	
-	for (int i=0;i<valid_moves[v2].size();++i){
-		if (valid_moves[v2][i].id==v1){
-			valid_moves[v2][i].i=get_i(node_id);
-			valid_moves[v2][i].j=get_j(node_id);
-			valid_moves[v2][i].id=node_id;
-			valid_moves[v2][i].agent=nodes[node_id].agent;
-			break;
-		}
-	}
+void Map::alter(Map_deltas map_deltas){
+    for (Map_delta delta:map_deltas){
+        int node_id(delta.add_node);
+        
+        if (node_id==-1)
+            return;
+        
+        int v1(delta.del_edge.first),v2(delta.del_edge.second);
+        
+        for (int i=0;i<valid_moves[v1].size();++i){
+            if (valid_moves[v1][i].id==v2){
+                valid_moves[v1][i].i=get_i(node_id);
+                valid_moves[v1][i].j=get_j(node_id);
+                valid_moves[v1][i].id=node_id;
+                valid_moves[v1][i].agent=nodes[node_id].agent;
+                break;
+            }
+        }
+        
+        for (int i=0;i<valid_moves[v2].size();++i){
+            if (valid_moves[v2][i].id==v1){
+                valid_moves[v2][i].i=get_i(node_id);
+                valid_moves[v2][i].j=get_j(node_id);
+                valid_moves[v2][i].id=node_id;
+                valid_moves[v2][i].agent=nodes[node_id].agent;
+                break;
+            }
+        }
+    }
 }
 
-void Map::alter_back(Map_delta map_delta){
-	int node_id(map_delta.add_node);
-	
-	if (node_id==-1)
-		return;
-	
-	int v1(map_delta.del_edge.first),v2(map_delta.del_edge.second);
-	
-	for (int i=0;i<valid_moves[v1].size();++i){
-		if (valid_moves[v1][i].id==node_id){
-			valid_moves[v1][i].i=get_i(v2);
-			valid_moves[v1][i].j=get_j(v2);
-			valid_moves[v1][i].id=v2;
-			valid_moves[v1][i].agent=nodes[i].agent;
-		}
-	}
-	
-	for (int i=0;i<valid_moves[v2].size();++i){
-		if (valid_moves[v2][i].id==node_id){
-			valid_moves[v2][i].i=get_i(v1);
-			valid_moves[v2][i].j=get_j(v1);
-			valid_moves[v2][i].id=v1;
-			valid_moves[v2][i].agent=nodes[i].agent;
-		}
-	}
+void Map::alter_back(Map_deltas map_deltas){
+    for (Map_delta delta: map_deltas){
+        int node_id(delta.add_node);
+        
+        if (node_id==-1)
+            return;
+        
+        int v1(delta.del_edge.first),v2(delta.del_edge.second);
+        
+        for (int i=0;i<valid_moves[v1].size();++i){
+            if (valid_moves[v1][i].id==node_id){
+                valid_moves[v1][i].i=get_i(v2);
+                valid_moves[v1][i].j=get_j(v2);
+                valid_moves[v1][i].id=v2;
+                valid_moves[v1][i].agent=nodes[i].agent;
+            }
+        }
+        
+        for (int i=0;i<valid_moves[v2].size();++i){
+            if (valid_moves[v2][i].id==node_id){
+                valid_moves[v2][i].i=get_i(v1);
+                valid_moves[v2][i].j=get_j(v1);
+                valid_moves[v2][i].id=v1;
+                valid_moves[v2][i].agent=nodes[i].agent;
+            }
+        }
+    }
 }

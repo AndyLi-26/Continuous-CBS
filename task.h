@@ -11,7 +11,6 @@
 #include "const.h"
 #include <fstream>
 #include "map.h"
-using namespace std;
 class Task
 {
 private:
