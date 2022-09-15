@@ -236,6 +236,7 @@ struct Map_delta{
 	Map_delta(int _add_node = -1, std::pair<int,int> _del_edge=std::make_pair(-1,-1))
 		: add_node(_add_node), del_edge(_del_edge) {}
 };
+typedef std::list<Map_delta> Map_deltas;
 
 struct CBS_Node
 {
@@ -250,13 +251,13 @@ struct CBS_Node
     unsigned int conflicts_num;
     unsigned int total_cons;
     unsigned int low_level_expanded;
-	Map_delta delta;
+	Map_deltas deltas;
 	Conflict cur_conflict;
     std::list<Conflict> conflicts;
     std::list<Conflict> semicard_conflicts;
     std::list<Conflict> cardinal_conflicts;
-    CBS_Node(std::vector<sPath> _paths = {}, CBS_Node* _parent = nullptr, Constraint _constraint = Constraint(),Map_delta _delta=Map_delta(), double _cost = 0, int _conflicts_num = 0, int total_cons_ = 0)
-        :paths(_paths), parent(_parent), constraint(_constraint), delta(_delta), cost(_cost), conflicts_num(_conflicts_num), total_cons(total_cons_)
+    CBS_Node(std::vector<sPath> _paths = {}, CBS_Node* _parent = nullptr, Constraint _constraint = Constraint(),Map_deltas _deltas={}, double _cost = 0, int _conflicts_num = 0, int total_cons_ = 0)
+        :paths(_paths), parent(_parent), constraint(_constraint), deltas(_deltas), cost(_cost), conflicts_num(_conflicts_num), total_cons(total_cons_)
     {
         low_level_expanded = 0;
         h = 0;
