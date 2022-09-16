@@ -1,12 +1,12 @@
 clc; clear all; close all;
 obj = VideoWriter("sparse_s_1.mp4", 'MPEG-4');
 obj.Quality = 100;
-obj.FrameRate = 20;
+obj.FrameRate = 30;
 open(obj);
-agent_size=0.5;
+agent_size=4.5;
 %draw map
 global nodes resolution
-resolution=0.5;
+resolution=0.3;
 nodes=readmatrix('nodes.csv');
 mapSize=[min(nodes,[],'all'),max(nodes,[],'all')];range=mapSize(2)-mapSize(1);
 mapSize=[mapSize(1)-0.01*range,mapSize(2)+0.01*range];
@@ -17,7 +17,7 @@ figure('Renderer', 'painters', 'Position', [10 10 900 900]);
 hold on; grid on; xlim(mapSize);ylim(mapSize);
 xlabel(sprintf("run-time=%f,    SoC=%f,    makespan=%f",summary));
 plot(nodes(:,1),nodes(:,2),'ro')
-dcm = datacursormode;
+dcm = datacursormode;          
 dcm.Enable = 'on';
 dcm.UpdateFcn = @displayind;
 for i=1:size(edges,1)

@@ -1,0 +1,46 @@
+agent size is larger than 0.5, forcing it to be:4.5
+Error! No 'output_file' element found inside, won't write to a txt
+read config success
+read map success
+read task success
+agents_num=2
+0:0->5
+1:4->6
+init_path
+0:(0,0)->(1,8.74643)->(2,17.1992)->(3,53.5302)->(5,109.591)->
+1:(4,0)->(2,16.3835)->(3,52.7145)->(6,88.3628)->
+Soulution found: true
+Use Edge Splitting: false
+Runtime: 0.0482617
+Makespan: 109.591
+Flowtime: 211.16
+Initial Cost: 197.954
+Collision Checking Time: 0.0290344
+HL expanded: 131
+LL searches: 716
+LL expanded(avg): 5.93575
+agent_size: 4.5
+introduce new node: 0
+agent size is larger than 0.5, forcing it to be:4.5
+Error! No 'output_file' element found inside, won't write to a txt
+read config success
+read map success
+read task success
+agents_num=2
+0:0->5
+1:4->6
+init_path
+0:(0,0)->(1,8.74643)->(2,17.1992)->(3,53.5302)->(5,109.591)->
+1:(4,0)->(2,16.3835)->(3,52.7145)->(6,88.3628)->
+Soulution found: true
+Use Edge Splitting: true
+Runtime: 0.0578399
+Makespan: 109.591
+Flowtime: 211.165
+Initial Cost: 197.954
+Collision Checking Time: 0.0355527
+HL expanded: 133
+LL searches: 728
+LL expanded(avg): 6.42582
+agent_size: 4.5
+introduce new node: 7
