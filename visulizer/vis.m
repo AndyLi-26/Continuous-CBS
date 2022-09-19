@@ -65,8 +65,10 @@ for t=1:summary(3)/resolution
     drawnow;
     f = getframe(gcf);
     writeVideo(obj,f);
+    exportgraphics(gcf,'paper.gif','Append',true);
 end
 f = getframe(gcf);
+exportgraphics(gcf,'paper.gif','Append',true);
 obj.close();
 
 function out = circle(x0,y0,radius,color)
