@@ -4,12 +4,12 @@ project( CCBS )
 
 set(Boost_USE_STATIC_LIBS OFF) 
 
-#find_package(Boost COMPONENTS multi_index)
+find_package(Boost)
 include_directories( ${Boost_INCLUDE_DIRS} )
 include_directories( "." )
 
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O0 -Wall -Wextra -ggdb3" )
-set( CMAKE_EXE_LINKER_FLAGS "-static -static-libgcc -static-libstdc++" )
+#set( CMAKE_EXE_LINKER_FLAGS "-static -static-libgcc -static-libstdc++" )
 
 set( SOURCE_FILES 
      main.cpp  
