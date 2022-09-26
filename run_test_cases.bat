@@ -18,3 +18,9 @@
 ./CCBS ../Examples/test_case/case7/map.xml  ../Examples/test_case/case7/task.xml  ../Examples/test_case/config1.xml >> ./case7.txt
 ./CCBS ../Examples/test_case/case8/map.xml  ../Examples/test_case/case8/task.xml  ../Examples/test_case/config0.xml > ./case8.txt
 ./CCBS ../Examples/test_case/case8/map.xml  ../Examples/test_case/case8/task.xml  ../Examples/test_case/config1.xml >> ./case8.txt
+
+./CCBS ../Examples/test_case/case10/map.xml  ../Examples/test_case/case10/task.xml  ../Examples/test_case/config0.xml > ./case10.txt
+./CCBS ../Examples/test_case/case10/map.xml  ../Examples/test_case/case10/task.xml  ../Examples/test_case/config1.xml >> ./case10.txt
+
+./CCBS ../Examples/test_case/case11/map.xml  ../Examples/test_case/case11/task.xml  ../Examples/test_case/config0.xml > ./case11.txt
+./CCBS ../Examples/test_case/case11/map.xml  ../Examples/test_case/case11/task.xml  ../Examples/test_case/config1.xml >> ./case11.txt
