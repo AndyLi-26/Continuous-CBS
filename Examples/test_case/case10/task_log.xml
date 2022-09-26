@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<root>
+    <agent start_id="2" goal_id="0"/>
+    <agent start_id="1" goal_id="4"/>
+    <log>
+        <summary time="0.14051487500000001" flowtime="183.16203429803625" makespan="100.44201557144858"/>
+        <agent number="0">
+            <path duration="82.720018726587654">
+                <section number="0" start_i="18" start_j="20" goal_i="18" goal_j="60" duration="40"/>
+                <section number="1" start_i="18" start_j="60" goal_i="3" goal_j="20" duration="42.720018726587654"/>
+            </path>
+        </agent>
+        <agent number="1">
+            <path duration="100.44201557144858">
+                <section number="0" start_i="18" start_j="10" goal_i="18" goal_j="20" duration="10"/>
+                <section number="1" start_i="18" start_j="20" goal_i="18" goal_j="33.100000000000001" duration="13.100000000000001"/>
+                <section number="2" start_i="18" start_j="33.100000000000001" goal_i="18" goal_j="33.100000000000001" duration="40.442015571448579"/>
+                <section number="3" start_i="18" start_j="33.100000000000001" goal_i="18" goal_j="60" duration="26.899999999999999"/>
+                <section number="4" start_i="18" start_j="60" goal_i="28" goal_j="60" duration="10"/>
+            </path>
+        </agent>
+    </log>
+</root>

@@ -24,7 +24,7 @@ for i=1:size(edges,1)
     drawline(edges(i,1)+1,edges(i,2)+1,'r-')
 end
 
-%plot tasks
+%% plot tasks
 tasks=readmatrix('tasks.csv');
 %agents=size(tasks,1);
 a=dir(['paths\*.csv']);

@@ -237,6 +237,21 @@ void Config::getConfig(const char *fileName)
         stream.str("");
     }
 	
+	element = algorithm->FirstChildElement("node_file");
+    if (!element)
+    {
+        cout << "Error! No 'node_file' element found inside, won't write to a txt"<<endl;
+        node_file= "";
+    }
+    else
+    {
+        auto value = element->GetText();
+        stream<<value;
+        stream>>node_file;
+        stream.clear();
+        stream.str("");
+    }
+
 	element = algorithm->FirstChildElement("use_edge_split");
     if (!element)
     {

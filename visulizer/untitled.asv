@@ -1,0 +1,7 @@
+function load_newNode()
+    new_nodes=readmatrix("node.txt");
+    for i=size(new_nodes,1)
+        newNode(new_nodes(i,1),new_nodes(i,2));
+    end
+
+end

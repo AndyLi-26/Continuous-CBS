@@ -24,6 +24,7 @@ public:
 	int 	agent_num;
 	//double 	resolution;
 	string output;
+	string node_file;
 };
 
 #endif // CONFIG_H

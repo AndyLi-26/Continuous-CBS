@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<root>
+    <agent start_id="0" goal_id="2"/>
+    <agent start_id="2" goal_id="0"/>
+    <agent start_id="4" goal_id="1"/>
+    <agent start_id="3" goal_id="4"/>
+    <log>
+        <summary time="30.010506374999999" flowtime="183.46075347770602" makespan="60"/>
+        <agent number="0">
+            <path duration="60">
+                <section number="0" start_i="10" start_j="10" goal_i="10" goal_j="25.5" duration="15.5"/>
+                <section number="1" start_i="10" start_j="25.5" goal_i="10" goal_j="25.5" duration="10"/>
+                <section number="2" start_i="10" start_j="25.5" goal_i="10" goal_j="30" duration="4.5"/>
+                <section number="3" start_i="10" start_j="30" goal_i="10" goal_j="60" duration="30"/>
+            </path>
+        </agent>
+        <agent number="1">
+            <path duration="59.0020751953125">
+                <section number="0" start_i="10" start_j="60" goal_i="10" goal_j="30" duration="30"/>
+                <section number="1" start_i="10" start_j="30" goal_i="10" goal_j="30" duration="9.0020751953125"/>
+                <section number="2" start_i="10" start_j="30" goal_i="10" goal_j="10" duration="20"/>
+            </path>
+        </agent>
+        <agent number="2">
+            <path duration="51.730406798018521">
+                <section number="0" start_i="50" start_j="30" goal_i="19.5" goal_j="30" duration="30.5"/>
+                <section number="1" start_i="19.5" start_j="30" goal_i="19.5" goal_j="30" duration="11.730406798018521"/>
+                <section number="2" start_i="19.5" start_j="30" goal_i="10" goal_j="30" duration="9.5"/>
+            </path>
+        </agent>
+        <agent number="3">
+            <path duration="12.728271484375">
+                <section number="0" start_i="50" start_j="20" goal_i="50" goal_j="20.5" duration="0.5"/>
+                <section number="1" start_i="50" start_j="20.5" goal_i="50" goal_j="20.5" duration="2.728271484375"/>
+                <section number="2" start_i="50" start_j="20.5" goal_i="50" goal_j="30" duration="9.5"/>
+            </path>
+        </agent>
+    </log>
+</root>

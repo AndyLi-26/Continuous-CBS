@@ -165,7 +165,7 @@ struct Constraint
 		if (con.positive){
 			os<<"+";
 		}
-        os<<"a:" <<con.agent <<"["<< con.id1<<"->"<<con.to_id<<"]"<<"("<<con.t1<<"~"<<con.t2<<")\n";//<<con.i1<<" "<<con.j1<<" "<<con.i2<<" "<<con.j2<<"\n";
+        os<<"a:" <<con.agent <<"["<< con.id1<<"->"<<con.to_id<<"]"<<"("<<con.t1<<"~"<<con.t2<<")";//<<con.i1<<" "<<con.j1<<" "<<con.i2<<" "<<con.j2<<"\n";
         return os;
     }
     bool operator <(const Constraint& other) const
@@ -242,6 +242,8 @@ struct CBS_Node
 {
     std::vector<sPath> paths;
     CBS_Node* parent;
+    CBS_Node* left_child;
+    CBS_Node* right_child;
     Constraint constraint;
     Constraint positive_constraint;
     int id;
@@ -375,7 +377,7 @@ public:
         return open_size;
     }
 
-    void add_node(CBS_Node node)
+    CBS_Node* add_node(CBS_Node node)
     {
         tree.push_back(node);
         container.insert(Open_Elem(&tree.back(), node.id, node.cost, node.total_cons, node.conflicts_num));
@@ -383,6 +385,7 @@ public:
         if(focal_weight > 1.0)
             if(container.get<0>().begin()->cost*focal_weight > node.cost)
                 focal.insert(Focal_Elem(node.id, node.conflicts_num, node.total_cons, node.cost));
+        return &tree.back();
     }
 
     CBS_Node* get_front()
