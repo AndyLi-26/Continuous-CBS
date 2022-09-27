@@ -238,12 +238,24 @@ struct Map_delta{
 };
 typedef std::list<Map_delta> Map_deltas;
 
+struct CBS_Node_aux
+{
+  CBS_Node_aux* left_child;
+  CBS_Node_aux* right_child;
+  int id,id_parent,id_left,id_right;
+  int cost;
+
+	Conflict cur_conflict;
+  Constraint constraint;
+  
+  CBS_Node_aux(CBS_Node node):id(node.id),id_parent(node.parent != nullptr? node.parent->id : -1), cost(node.cost),cur_conflict(node.cur_conflict), constraint(node.constraint){};
+
+}
+
 struct CBS_Node
 {
-    std::vector<sPath> paths;
+  std::vector<sPath> paths;
     CBS_Node* parent;
-    CBS_Node* left_child;
-    CBS_Node* right_child;
     Constraint constraint;
     Constraint positive_constraint;
     int id;

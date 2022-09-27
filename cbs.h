@@ -61,6 +61,7 @@ public:
     Config config;
     Map* map;
 	Map* original;
+  boost::unordered_map<int,CBS_Node_aux> tree_info;
 
 };
 
