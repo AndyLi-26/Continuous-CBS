@@ -238,19 +238,6 @@ struct Map_delta{
 };
 typedef std::list<Map_delta> Map_deltas;
 
-struct CBS_Node_aux
-{
-  CBS_Node_aux* left_child;
-  CBS_Node_aux* right_child;
-  int id,id_parent,id_left,id_right;
-  int cost;
-
-	Conflict cur_conflict;
-  Constraint constraint;
-  
-  CBS_Node_aux(CBS_Node node):id(node.id),id_parent(node.parent != nullptr? node.parent->id : -1), cost(node.cost),cur_conflict(node.cur_conflict), constraint(node.constraint){};
-
-}
 
 struct CBS_Node
 {
@@ -287,6 +274,20 @@ struct CBS_Node
         semicard_conflicts.clear();
         cardinal_conflicts.clear();
     }
+
+};
+
+struct CBS_Node_aux
+{
+  CBS_Node_aux* left_child;
+  CBS_Node_aux* right_child;
+  int id,id_parent,id_left=-1,id_right=-1;
+  int cost;
+
+	Conflict cur_conflict;
+  Constraint constraint;
+  
+  CBS_Node_aux(CBS_Node node):id(node.id),id_parent(node.parent != nullptr? node.parent->id : -1), cost(node.cost),cur_conflict(node.cur_conflict), constraint(node.constraint),id_left(-1),id_right(-1) {};
 
 };
 

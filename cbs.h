@@ -51,8 +51,8 @@ public:
 	void prt_paths(std::vector<sPath> paths);
 	void prt_map_delta_pair(Map_deltas delta_pair);
 	void saveCT(const string &fileName,CBS_Node *goal_node,unsigned int agent_num);
-  void printBT_aux(const CBS_Node *node);
-  void printBT(const string& prefix, const CBS_Node *node, bool isLeft);
+  void printBT_aux();
+  void printBT(const string& prefix, const int node_id, bool isLeft);
 	Vector2D ind2Vec(int nodeId);
     CBS_Tree tree;
     SIPP planner;
@@ -61,8 +61,9 @@ public:
     Config config;
     Map* map;
 	Map* original;
-  boost::unordered_map<int,CBS_Node_aux> tree_info;
-
+    typedef boost::unordered_map<int,CBS_Node_aux*> tree_aux;
+    tree_aux tree_info;
+    
 };
 
 #endif // CBS_H

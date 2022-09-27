@@ -43,6 +43,8 @@ bool CBS::init_root(Map &map, const Task &task)
     }
   solution.init_cost = root.cost;
   tree.add_node(root);
+  CBS_Node_aux r_aux(root);
+  tree_info[1]=&r_aux;
   //map.prt_validmoves();
   return true;
 }
@@ -356,7 +358,7 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
     auto semicard_conflicts = node.semicard_conflicts;
     if(conflicts.empty() && semicard_conflicts.empty() && cardinal_conflicts.empty())
     {
-      printBT_aux(&node);
+      printBT_aux();
       //string file="CT_tree.dot";
       //saveCT(file,&node,task.get_agents_size());
       //prt_paths(paths);
@@ -567,6 +569,14 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
     left.id_str = node.id_str + "1";
     right.id = id++;
     left.id = id++;
+    //tree_aux::iterator it;
+    //it = tree_info.find(parent->id);
+    //CBS_Node_aux* rap(*it);
+    tree_info[node.id]->id_left=left.id;
+    tree_info[node.id]->id_right=right.id;
+    CBS_Node_aux l_aux(left),r_aux(right);
+    tree_info[left.id]=&l_aux;
+    tree_info[right.id]=&r_aux;
     //cout<<node.id<<"->"<<right.id<<endl;
     //cout<<node.id<<"->"<<left.id<<endl;
     /*
@@ -598,8 +608,7 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
       {
         right.h = get_hl_heuristic(right.cardinal_conflicts);
         right.cost += right.h;
-        CBS_Node* rightAddr=tree.add_node(right);
-        parent->right_child=rightAddr;
+        tree.add_node(right);
         /*
            if (node.cost+node.h-0.1>right.cost+config.precision){
            cout<<"g+h="<<node.cost<<"+"<<node.h<<">"<<right.cost<<endl;
@@ -629,8 +638,7 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
       {
         left.h = get_hl_heuristic(left.cardinal_conflicts);
         left.cost += left.h;
-        CBS_Node* leftAddr=tree.add_node(left);
-        parent->left_child=leftAddr;
+      tree.add_node(left);
         /*
            if (node.cost+node.h-0.1>left.cost+config.precision){
            cout<<endl<<endl<<endl;
@@ -663,7 +671,7 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
     if(time_spent.count() > config.timelimit)
     {
       solution.found = false;
-      printBT_aux(&node);
+      printBT_aux();
       break;
     }
   }
@@ -1372,10 +1380,12 @@ Vector2D CBS::ind2Vec(int nodeId)
   return Vector2D(map->get_i(nodeId),map->get_j(nodeId));
 }
 
-void CBS::printBT(const std::string& prefix, const CBS_Node *node, bool isLeft)
+void CBS::printBT(const std::string& prefix, const int node_id, bool isLeft)
 {
-  if (node != nullptr)
-  {
+  if (node_id==-1) return;
+  tree_aux::iterator it;
+  it=tree_info.find(node_id);
+  CBS_Node_aux* node=(it->second);
     cout << prefix;
     cout << (isLeft ? "├──" : "└──");
     cout<<"g: "<<node->cost<<" ";
@@ -1389,14 +1399,11 @@ void CBS::printBT(const std::string& prefix, const CBS_Node *node, bool isLeft)
       std::cout << "no choosen conflict "<<" "<< node->cost << std::endl;
     }
 */
-    printBT(prefix + (isLeft ? "│   " : "    "), node->left_child, true);
-    printBT(prefix + (isLeft ? "│   " : "    "), node->right_child, false);
-  }
+    printBT(prefix + (isLeft ? "│   " : "    "), node->id_left, true);
+    printBT(prefix + (isLeft ? "│   " : "    "), node->id_right, false);
 }
 
-void CBS::printBT_aux(const CBS_Node *node) 
+void CBS::printBT_aux() 
 {
-  while (node->parent!=nullptr) 
-    node=node->parent;
-  printBT("",node,false);
+  printBT("",1,false);
 }
