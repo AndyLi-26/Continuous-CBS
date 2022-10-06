@@ -48,7 +48,7 @@ if __name__=="__main__":
     if isExist:
         shutil.rmtree("paths")
     
-    os.mkdir("paths\ ")
+    os.mkdir("./paths")
     
     for i,info in enumerate(paths):
         parserP(i,info)

@@ -15,6 +15,7 @@ summary=readmatrix('summary.txt');%run-time, SoC, makespan
 
 figure('Renderer', 'painters', 'Position', [10 10 900 900]);
 hold on; grid on; xlim(mapSize);ylim(mapSize);
+%xlim([80,155]);ylim([135,210]);
 xlabel(sprintf("run-time=%f,    SoC=%f,    makespan=%f",summary));
 plot(nodes(:,1),nodes(:,2),'ro')
 dcm = datacursormode;          
@@ -27,9 +28,10 @@ end
 %% plot tasks
 tasks=readmatrix('tasks.csv');
 %agents=size(tasks,1);
-a=dir(['paths\*.csv']);
+a=dir(['paths/*.csv']);
 agents=length(extractfield(a,"name"));
 colors=jet(agents+1);
+%colors=double([0xb6,0xd7,0xa8;0xa4,0xc2,0xf4])/255;
 for i=1:agents
     plot(nodes(tasks(i,1)+1,1),nodes(tasks(i,1)+1,2),'.',MarkerFaceColor=colors(i,:),MarkerSize=10);
     text(nodes(tasks(i,1)+1,1),nodes(tasks(i,1)+1,2),num2str(i),'Color','black','FontSize',9)
@@ -43,7 +45,7 @@ writeVideo(obj,f);
 %gen animation
 paths=cell(1,agents);
 for i=1:agents
-    info=readmatrix(['paths\',num2str(i-1),'.csv']);
+    info=readmatrix(['paths/',num2str(i-1),'.csv']);
     paths(i)={genPathMatrix(info)};
 end
 
@@ -63,12 +65,13 @@ for t=1:summary(3)/resolution
         end
     end
     drawnow;
+    grid off;
     f = getframe(gcf);
     writeVideo(obj,f);
-    exportgraphics(gcf,'paper.gif','Append',true);
+    %exportgraphics(gcf,'ccbs.gif','Append',true);
 end
 f = getframe(gcf);
-exportgraphics(gcf,'paper.gif','Append',true);
+%exportgraphics(gcf,'paper.gif','Append',true);
 obj.close();
 
 function out = circle(x0,y0,radius,color)

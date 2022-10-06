@@ -352,101 +352,103 @@ bool Map::get_roadmap(const char *FileName)
 
 int Map::add_node(double i, double j, int node1, int node2,int agent)
 {
-	//std::cout<<"new agent:"<<agent<<std::endl;
-	hast_table::iterator it;
-	node_index ind(std::make_pair(i,j));
-	//check if exist
-	it = nodes_table.find(ind);
-	//std::cout<<std::endl<<std::endl<<"info"<<std::endl;
-	//prt_ind(ind);
-	//std::cout<<"("<<ind.first.first<<","<<ind.first.second<<") a:"<<ind.second<<std::endl;
-	//prt_nodes();
-	int node_id;
-	if (it != nodes_table.end())
-	{
-		node_id=it->second;
-		if (nodes[node_id].agent.find(-1)!=nodes[node_id].agent.end() || nodes[node_id].agent.find(agent)!=nodes[node_id].agent.end())
-			return -1;
-		else{
-			nodes[node_id].agent.insert(agent);
-			
-			bool n1=false,n2=false;
-			for (Node n:valid_moves[node_id]){
-				if(n1 && n2) break;
-				if (n.id==node1) n1=true;
-				if (n.id==node2) n2=true;
-			}
-			if (!n1){
-				Node valid1;
-				valid1.i = nodes[node1].i;
-				valid1.j = nodes[node1].j;
-				valid1.id = node1;
-				valid1.agent.insert(-1);
-				valid_moves[node_id].push_back(valid1);
-			}
-			if (!n2){
-				Node valid2;
-				valid2.i = nodes[node2].i;
-				valid2.j = nodes[node2].j;
-				valid2.id = node2;
-				valid2.agent.insert(-1);
-				valid_moves[node_id].push_back(valid2);
-			}
-			
-		}
-	}
-	else{
-		node_id=nodes.size();
-		gNode tempnode(i,j);
-		nodes.push_back(tempnode);
-		this->size+=1;
-		nodes[node_id].agent.insert(agent);
-		nodes_table[ind]=node_id;
-		
-		std::vector<Node> neighbors;
-		Node valid1;
-		valid1.i = nodes[node1].i;
-		valid1.j = nodes[node1].j;
-		valid1.id = node1;
-		valid1.agent.insert(-1);
-		neighbors.push_back(valid1);
-		Node valid2;
-		valid2.i = nodes[node2].i;
-		valid2.j = nodes[node2].j;
-		valid2.agent.insert(-1);
-		valid2.id = node2;
-		neighbors.push_back(valid2);
-		valid_moves.push_back(neighbors);
-	}
-	//add nodes to node list
-	nodes[node_id].neighbors.push_back(node1);
-	nodes[node_id].neighbors.push_back(node2);
-	nodes[node1].neighbors.push_back(node_id);
-	nodes[node2].neighbors.push_back(node_id);
-	
-	//add node to hash_table
-	
-	
-	//add edges
-	//Node node;
-	//node.i=i;
-	//node.j=j;
-	//node.id=nodeid;
-	
-	//break up the original edge
-	/*
-	for (int n=0;n<valid_moves[node1].size();++n){
-		if (valid_moves[node1][n].id==node2){
-			valid_moves[node1][n].negtive_list.push_back(agent);
-		}
-	}
-	
-	for (int n=0;n<valid_moves[node2].size();++n){
-		if (valid_moves[node2][n].id==node1){
-			valid_moves[node2][n].negtive_list.push_back(agent);
-		}
-	}
-	
+  //std::cout<<"new agent:"<<agent<<std::endl;
+  hast_table::iterator it;
+  node_index ind(std::make_pair(i,j));
+  //check if exist
+  it = nodes_table.find(ind);
+  //std::cout<<std::endl<<std::endl<<"info"<<std::endl;
+  //prt_ind(ind);
+  //std::cout<<"("<<ind.first.first<<","<<ind.first.second<<") a:"<<ind.second<<std::endl;
+  //prt_nodes();
+  int node_id;
+  if (it != nodes_table.end())
+  {
+    node_id=it->second;
+    if (node_id== node1 || node_id==node2)
+      return -1;
+    if (nodes[node_id].agent.find(-1)!=nodes[node_id].agent.end() || nodes[node_id].agent.find(agent)!=nodes[node_id].agent.end())
+      return -1;
+    else{
+      nodes[node_id].agent.insert(agent);
+
+      bool n1=false,n2=false;
+      for (Node n:valid_moves[node_id]){
+        if(n1 && n2) break;
+        if (n.id==node1) n1=true;
+        if (n.id==node2) n2=true;
+      }
+      if (!n1){
+        Node valid1;
+        valid1.i = nodes[node1].i;
+        valid1.j = nodes[node1].j;
+        valid1.id = node1;
+        valid1.agent.insert(-1);
+        valid_moves[node_id].push_back(valid1);
+      }
+      if (!n2){
+        Node valid2;
+        valid2.i = nodes[node2].i;
+        valid2.j = nodes[node2].j;
+        valid2.id = node2;
+        valid2.agent.insert(-1);
+        valid_moves[node_id].push_back(valid2);
+      }
+
+    }
+  }
+  else{
+    node_id=nodes.size();
+    gNode tempnode(i,j);
+    nodes.push_back(tempnode);
+    this->size+=1;
+    nodes[node_id].agent.insert(agent);
+    nodes_table[ind]=node_id;
+
+    std::vector<Node> neighbors;
+    Node valid1;
+    valid1.i = nodes[node1].i;
+    valid1.j = nodes[node1].j;
+    valid1.id = node1;
+    valid1.agent.insert(-1);
+    neighbors.push_back(valid1);
+    Node valid2;
+    valid2.i = nodes[node2].i;
+    valid2.j = nodes[node2].j;
+    valid2.agent.insert(-1);
+    valid2.id = node2;
+    neighbors.push_back(valid2);
+    valid_moves.push_back(neighbors);
+  }
+  //add nodes to node list
+  nodes[node_id].neighbors.push_back(node1);
+  nodes[node_id].neighbors.push_back(node2);
+  nodes[node1].neighbors.push_back(node_id);
+  nodes[node2].neighbors.push_back(node_id);
+
+  //add node to hash_table
+
+
+  //add edges
+  //Node node;
+  //node.i=i;
+  //node.j=j;
+  //node.id=nodeid;
+
+  //break up the original edge
+  /*
+     for (int n=0;n<valid_moves[node1].size();++n){
+     if (valid_moves[node1][n].id==node2){
+     valid_moves[node1][n].negtive_list.push_back(agent);
+     }
+     }
+
+     for (int n=0;n<valid_moves[node2].size();++n){
+     if (valid_moves[node2][n].id==node1){
+     valid_moves[node2][n].negtive_list.push_back(agent);
+     }
+     }
+
 	
 	for (int n=0;n<valid_moves[node2].size();++n){
 		if (valid_moves[node2][n].id==node1){

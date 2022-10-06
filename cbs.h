@@ -49,7 +49,7 @@ public:
 	void prt_conflicts(list<Conflict> conflicts);
 	void prt_path(sPath p);
 	void prt_paths(std::vector<sPath> paths);
-	void prt_map_delta_pair(Map_deltas delta_pair);
+	void prt_map_deltas(Map_deltas R,Map_deltas L);
 	void saveCT(const string &fileName,CBS_Node *goal_node,unsigned int agent_num);
   void printBT_aux();
   void printBT(const string& prefix, const int node_id, bool isLeft);

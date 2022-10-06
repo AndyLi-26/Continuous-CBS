@@ -159,13 +159,13 @@ struct Constraint
     friend std::ostream& operator <<(std::ostream& os, const Constraint& con)
     {
 		if(con.agent==-1){
-			os<<"";
+			os<<std::endl;
 			return os;
 		}
 		if (con.positive){
 			os<<"+";
 		}
-        os<<"a:" <<con.agent <<"["<< con.id1<<"->"<<con.to_id<<"]"<<"("<<con.t1<<"~"<<con.t2<<")";//<<con.i1<<" "<<con.j1<<" "<<con.i2<<" "<<con.j2<<"\n";
+        os<<"a:" <<con.agent <<"["<< con.id1<<"->"<<con.to_id<<"]"<<"("<<con.t1<<"~"<<con.t2<<")"<<std::endl;;//<<con.i1<<" "<<con.j1<<" "<<con.i2<<" "<<con.j2<<"\n";
         return os;
     }
     bool operator <(const Constraint& other) const

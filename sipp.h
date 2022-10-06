@@ -12,9 +12,10 @@ public:
 
     SIPP()  {}
     ~SIPP() {}
-    Path find_path(Agent agent, const Map &map, std::list<Constraint> cons, Heuristic &h_values);
+    Path find_path(Agent agent, const Map &map, std::list<Constraint> cons, Heuristic &h_values, bool p=false);
 
 private:
+    bool p=false;
     Agent agent;
     std::vector<Path> find_partial_path(std::vector<Node> starts, std::vector<Node> goals, const Map &map, Heuristic &h_values, double max_f = CN_INFINITY);
     Path add_part(Path result, Path part);
@@ -31,6 +32,8 @@ private:
     double check_endpoint(Node start, Node goal);
 	void prt_constraint(Constraint c);
 	void prt_constraints(std::list<Constraint> constraints);
+  void prt_cons();
+  void prt_intervals();
 	
     std::unordered_map<int, Node> close;
     std::list<Node> open;
