@@ -21,7 +21,7 @@ bool CBS::init_root(Map &map, const Task &task)
   auto conflicts = get_all_conflicts(root.paths, -1);
   root.conflicts_num = conflicts.size();
   cout<<"init_path"<<endl;
-  prt_paths(root.paths);
+  //prt_paths(root.paths);
   for(auto conflict: conflicts)
     if(!config.use_cardinal)
       root.conflicts.push_back(conflict);
@@ -45,7 +45,7 @@ bool CBS::init_root(Map &map, const Task &task)
   tree.add_node(root);
   CBS_Node_aux*  r_aux= new CBS_Node_aux(root);
   tree_info[1]=r_aux;
-  map.prt_validmoves();
+  //map.prt_validmoves();
   return true;
 }
 
@@ -345,8 +345,8 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
     parent->cardinal_conflicts.clear();
     parent->semicard_conflicts.clear();
     bool p=false;
-    if (node.id==4)
-      p=false;
+    //if (node.id==4)
+    //  p=false;
 
     //cout<<"###"<<endl;
     //cout<<node.id<<endl;
@@ -367,7 +367,7 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
     auto semicard_conflicts = node.semicard_conflicts;
     if(conflicts.empty() && semicard_conflicts.empty() && cardinal_conflicts.empty())
     {
-      printBT_aux();
+      //printBT_aux();
       //string file="CT_tree.dot";
       //saveCT(file,&node,task.get_agents_size());
       //prt_paths(paths);
@@ -699,8 +699,8 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
     if(time_spent.count() > config.timelimit )
     {
       solution.found = false;
-      printBT_aux();
-      map.prt_validmoves();
+      //printBT_aux();
+      //map.prt_validmoves();
       break;
     }
   }
