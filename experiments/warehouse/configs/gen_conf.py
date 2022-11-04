@@ -18,7 +18,7 @@ sconf='''<?xml version="1.0" ?>
 '''
 if __name__=="__main__":
 
-    for a_size in [0.5,1.5,2.5,3.5,4.5]:
+    for a_size in [4.5]:
         folder_name=str(a_size)
         if os.path.exists(folder_name):
             os.rmdir(folder_name)

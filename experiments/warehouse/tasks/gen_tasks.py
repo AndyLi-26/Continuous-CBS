@@ -8,13 +8,20 @@ def exportTask_XML(tasks,i):
         
 if __name__=="__main__":
     all=[]
-    while len(all)<100:
-        new=random.choices(range(30,130),k=30)
-        if new not in all:
-            all.append(new)
-    
+    for i in range(100):
+        task_list=[]
+        temp=list(range(100))
+        new=random.choices(temp,k=30)
+        j=0
+        while j<30:
+            target=random.choice(temp)
+            if new[j]!=target:
+                temp.remove(target)
+                task_list.append((new[j],target))
+                j+=1
+        all.append(task_list)
+        print(*task_list,sep='\n')
+        print('-----------------------')
     for i,l in enumerate(all):
-        tasks=[x for x in enumerate(l)]
-        print(tasks)
-        exportTask_XML(tasks,i)
-    
+        print(l)
+        exportTask_XML(l,i)

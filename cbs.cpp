@@ -345,8 +345,8 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
     parent->cardinal_conflicts.clear();
     parent->semicard_conflicts.clear();
     bool p=false;
-    if (node.id==34543)
-      p=true;
+    if (node.id==4)
+      p=false;
 
     //cout<<"###"<<endl;
     //cout<<node.id<<endl;
@@ -403,7 +403,8 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
     time_spent = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::high_resolution_clock::now() - time_now);
     time += time_spent.count();
     expanded++;
-
+    if (expanded==51)
+      1;
     std::list<Constraint> constraintsA = get_constraints(&node, conflict.agent1);
     //std::list<Constraint> constraintsA_New;
     Constraint constraintA;
@@ -695,7 +696,7 @@ Solution CBS::find_solution(Map &map, const Task &task, const Config &cfg)
       }
     }
     time_spent = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::high_resolution_clock::now() - t);
-    if(time_spent.count() > config.timelimit || id >100)
+    if(time_spent.count() > config.timelimit )
     {
       solution.found = false;
       printBT_aux();
